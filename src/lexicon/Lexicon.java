@@ -3,13 +3,29 @@ package lexicon;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-
+/**
+ * Used by the decision making agent to select a word from a list of possibilities, the lexicon generates a list of candidate words, along with a frequency of use, when presented with an incomplete word or list of words. Words are pulled from a pre-existing mySQL database that is loaded from a specified address. The lexicon also updates the frequency of use of a specific word in the aforementioned database when the word is chosen as the best candidate by the decision making agent. 
+ * @author Nathan Van Dyken
+ *
+ */
 public class Lexicon {
 
+	/**
+	 * The connection to the mySQL database. It is opened in the private loadDB method and is closed when the object is destroyed.
+	 */
 	Connection conn;
-	private final String DB_USERNAME = "root";
-	private final String DB_PASSWORD = "";
+	/**
+	 * The address of the mySQL server which holds the lexicon.
+	 */
 	private final String DB_URL = "jdbc:mysql://localhost/entries";
+	/**
+	 * The username that will be used to log into the mySql server.
+	 */
+	private final String DB_USERNAME = "root";
+	/**
+	 * The password that will be used to log into the mySql server.
+	 */
+	private final String DB_PASSWORD = "";
 	
 	public Lexicon() {
 		
@@ -102,24 +118,29 @@ public class Lexicon {
 		return result;
 		
 	}
-	
+	/**
+	 * Updates the database to reflect the use of the specified word. If the word does not exist in the DB, a record is created and the frequency of use of the word is initialized to one. Else, if the word does exist, the frequency of use of the word is incremented by one.
+	 * @param newWord the word for which the frequency of use should be updated.
+	 */
 	public void useWord( String newWord ){
+		
+		newWord = newWord.toLowerCase();
 		
 		try {
 			
 			Statement stmt = conn.createStatement();
 			
-			if( !stmt.executeQuery("SELECT * FROM entries where word = '"+newWord+"'").next()){			//If there is no result from the query, add the word to the DB.
+			ResultSet rS = stmt.executeQuery("SELECT * FROM entries where word = '"+newWord+"'");
+			
+			if( !rS.next()){																			//If there is no result from the query, add the word to the DB.
 				
 				stmt.executeUpdate("INSERT INTO entries VALUES ('"+newWord+"', 1)");
 				
-			}else{
+			}else{																						//Otherwise, get the current frequency, increment it by one, then update the corresponding field in the DB.
 				
-				ResultSet rS = stmt.executeQuery("SELECT freq FROM entries where word = '"+newWord+"'");
+				int newFreq = rS.getInt("freq") + 1;
 				
-				int tempFreq = rS.getInt("freq");
-				
-				stmt.executeUpdate("INSERT INTO entries VALUES ('"+newWord+"', 1)");
+				stmt.executeUpdate("UPDATE entries SET freq = "+newFreq+" WHERE word ='"+newWord+"'");
 				
 			}
 			
