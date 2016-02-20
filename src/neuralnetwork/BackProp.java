@@ -218,7 +218,7 @@ public class BackProp {
         }
     }
     
-    //  MAIN FUNCTION
+    //  MAIN FUNCTION 
     public static void main(String[] args) {
     	boolean productionMode = false; // Are we running a pre trained neural network?
     	Map<String, int[]> trainingAlphabet = new HashMap<String, int[]>();
