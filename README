@@ -5,7 +5,22 @@ Code Conventions
 
 1. The main class will only contain top level code. This means that it should contain top level modules and the code necessary for interactions between them. Other main classes should only be used for testing purposes and should be clearly indicated for this purpose.
 
-Modules should be organized into packages of related classes.
+For example:
+
+	public static void main (String[] args) {
+		
+		A_Class a;
+		B_Class b;
+		C_Class c;
+		
+		a.generateData();
+		b.modifyData(a.getData());
+		c.displayData(b.getData());
+		
+	}
+	
+
+Modules should be organized into packages of related classes. 
 
 
 
