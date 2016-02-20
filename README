@@ -3,9 +3,9 @@
 Code Conventions
 ================
 
-The main class will only contain top level code. This means that it should contain top level modules and the code necessary for
-interactions between them. Other main classes should only be used for testing purposes and should be clearly indicated for this
-purpose.
+1. The main class will only contain top level code. This means that it should contain top level modules and the code necessary for interactions between them. Other main classes should only be used for testing purposes and should be clearly indicated for this purpose.
+
+Modules should be organized into packages of related classes.
 
 
 
