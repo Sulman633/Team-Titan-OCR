@@ -3,7 +3,9 @@
 Code Conventions
 ================
 
-1. The main class will only contain top level code. This means that it should contain top level modules and the code necessary for interactions between them. Other main classes should only be used for testing purposes and should be clearly indicated for this purpose.
+1. The main class will only contain top level code. This means that it should contain top level modules and the code necessary 
+   for interactions between them. Other main classes should only be used for testing purposes and should be clearly indicated 
+   for this purpose.
 
 For example:
 
@@ -19,7 +21,8 @@ For example:
 		
 	}
 	
-2. Modules should be organized into packages of related classes. These packages should be named appropriately. The package structure should accurately reflect our design choices in terms of abstraction.
+2. Modules should be organized into packages of related classes. These packages should be named appropriately. The package 
+   structure should accurately reflect our design choices in terms of abstraction.
 
 For example:
 
