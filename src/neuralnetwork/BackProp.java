@@ -10,7 +10,7 @@ import java.math.*;
 public class BackProp {
 	static double learningRate = 0.3;
 	
-    public static void feedF(ArrayList<Neuron> input, ArrayList<Neuron> hidden, ArrayList<Neuron> output, int expected){
+    public static void feedF(ArrayList<Neuron> input, ArrayList<Neuron> hidden, ArrayList<Neuron> output, int[] expected){
     	double sum;
     	double hsum;
     	
@@ -24,23 +24,24 @@ public class BackProp {
 	    		
 	    		for(int j=0;j<input.size();j++){ // for each input node
 	    			
-	    			sum = sum + input.get(j).value*input.get(j).weight.get(i); // gather the sum ( value*weight )
+	    			sum = sum + input.get(j).value * input.get(j).weight.get(i); // gather the sum ( value*weight )
 	    		}
 	    		
 	    		hidden.get(i).summation = sum; // set the summation within the hidden node
 	    		
-	    		hidden.get(i).value = sigmoid(sum+expected); // perform the sigmoid function on the hidden node
+	    		hidden.get(i).value = sigmoid(sum); // perform the sigmoid function on the hidden node
 	    		
-	    		hsum = hsum + hidden.get(i).value*hidden.get(i).weight.get(b); // set the hidden node sum to the values * the connection weights
+	    		hsum = hsum + hidden.get(i).value * hidden.get(i).weight.get(b); // set the hidden node sum to the values * the connection weights
 	    	}
 	    	
 	    	output.get(b).summation = hsum; // set the output summation value to equal the sum of hidden nodes
 	    	
-	    	output.get(b).value = sigmoid(hsum+expected); // perform sigmoid again to get output node value
+	    	output.get(b).value = sigmoid(hsum); // perform sigmoid again to get output node value
+	    	
+	    	// sets the error value
+	    	output.get(b).setError(expected[b]);
     	}
     	
-    	// sets the error value
-    	output.get(0).setError(expected);
     	
     	// Perform back propagation on the NN
     	backP(input,hidden,output);
@@ -49,43 +50,52 @@ public class BackProp {
     
     public static void backP(ArrayList<Neuron> input, ArrayList<Neuron> hidden, ArrayList<Neuron> output){
     	double tempWeight;
-    	
-    	for(int b=0; b<output.size();b++){ // for each output node
+	    		
+		//derives the error for the hidden layer from the output error
+		int hiddenNodeError = 0;
+		
+    	for(int i=0; i<hidden.size();i++){ // for each hidden node
     		
-    		//derives the error for the hidden layer from the output error
-    		
-	    	for(int i=0; i<hidden.size();i++){ // for each hidden node
-	    		hidden.get(i).error = hidden.get(i).weight.get(b) * output.get(b).error; // calculate the error at hidden node by multiplying the output error by weight
-	    	}
-	    	
-	    	//updates each input weights using the hidden layer error values
-	    	for(int i=0; i<hidden.size();i++){ // for each hidden node
-	    		
-	    		for(int j=0; j<input.size();j++){ // for each input node
-	    			
-	    			// Calculate the error at input node by multiplying hidden node error by weight
-	    			input.get(j).error = input.get(j).weight.get(i) * hidden.get(i).error;
-	    			
-	    			// Set the temporary new weight to the current rate plus the calculated change 
-	    			// (Learning rate * hidden layer error * derivative of hidden layer sum * input value)
-	    			tempWeight = input.get(j).weight.get(i) + (learningRate * hidden.get(i).error * der(hidden.get(i).summation) * input.get(j).value); 
-	    			
-	    			//set the weight of the input to hidden layer connection
-	    			input.get(j).weight.set(i, tempWeight);
-	    		}
-	    		
-	    	}
-	    	
-	    	//updates the hidden layer weights using output layer error value
-	    	for(int i=0;i<hidden.size();i++){
-	    		
-	    		//same as input layer to hidden layer weight updates, performed on hidden layer to output layer weights
-	    		tempWeight = hidden.get(i).weight.get(b) + (learningRate * output.get(b).error*der(output.get(b).summation)*hidden.get(i).value);
-	    		hidden.get(i).weight.set(b, tempWeight);
-	    	}
-	    	
-    	
+    		for (int k = 0; k < output.size(); k++){
+    			
+    			hiddenNodeError += hidden.get(i).weight.get(k) * output.get(k).error; // calculate the error at hidden node by multiplying the output error by weight
+    			
+    		}
+    		hidden.get(i).error = hiddenNodeError;
     	}
+    	
+    	//updates each input weights using the hidden layer error values
+    	for(int i=0; i<hidden.size();i++){ // for each hidden node
+    		
+    		for(int j=0; j<input.size();j++){ // for each input node
+    			
+    			// DO NOT NEED?
+    			// Calculate the error at input node by multiplying hidden node error by weight
+    			// input.get(j).error = input.get(j).weight.get(i) * hidden.get(i).error;
+    			// DO NOT NEED?
+    			
+    			// Set the temporary new weight to the current rate plus the calculated change 
+    			// (Learning rate * hidden layer error * derivative of hidden layer sum * input value)
+    			tempWeight = input.get(j).weight.get(i) + (learningRate * hidden.get(i).error * der(hidden.get(i).summation) * input.get(j).value); 
+    			
+    			//set the weight of the input to hidden layer connection
+    			input.get(j).weight.set(i, tempWeight);
+    		}
+    		
+    	}
+    	
+    	//updates the hidden layer weights using output layer error value
+    	for(int i=0;i<hidden.size();i++){
+    		
+    		for(int k=0; k<output.size();k++){
+    			
+	    		//same as input layer to hidden layer weight updates, performed on hidden layer to output layer weights
+	    		tempWeight = hidden.get(i).weight.get(k) + (learningRate * output.get(k).error*der(output.get(k).summation)*hidden.get(i).value);
+	    		
+	    		hidden.get(i).weight.set(k, tempWeight);
+    		}
+    	}
+	    	
     	
     }
     
@@ -99,24 +109,11 @@ public class BackProp {
     	return 1/(1+Math.exp(-(x)));
     }
     
-    // reads input.txt for testing data
-    // Note, this is used for parity bit input
-    public static ArrayList<String> getInputs(){
-    	ArrayList<String> allInput = new ArrayList<>();
-		
-    	File file = new File("input.txt");
-
-        try {
-            Scanner sc = new Scanner(file);
-            while (sc.hasNextLine()) {
-                allInput.add(sc.nextLine());
-            }
-
-        	sc.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    	return allInput;
+    //runs through each int in the array of pixel values and sets each input node to its matching pixel
+    public static void setInputNodes(int[] input, ArrayList<Neuron> inputLayer){
+    	for (int node = 0; node < inputLayer.size(); node++){
+    		inputLayer.get(node).value = input[node];
+    	}
     }
     
  
@@ -133,6 +130,8 @@ public class BackProp {
         int hiddenLayerSize = sc.nextInt(); // Number of Hidden Nodes
     	System.out.println("Size of Alphabet is: " + alphabetSize);
         int outputLayerSize = alphabetSize; // Number of Output Nodes
+        
+        sc.close(); // close the scanner to minimize memory leaks
 
         Neuron tempNeuron;
         
@@ -161,33 +160,20 @@ public class BackProp {
         
         // set output layer representations
         outputLayer = ht.setOutputNodeRepresentations(outputLayer);
-        
-      //grabs the testing data from input.txt and stores it in an arraylist
-        ArrayList<String> inputData;
-        inputData = getInputs();
                 
         
-        int expected = 0; //variable for expected value and also used as the biased value = 1
+        int[] expected = new int[outputLayer.size()]; //variable for expected value and also used as the biased value = 1
         
         //epoch
         for (int count = 0; count < 10000; count++){
-        	String currentInput = inputData.get(rand.nextInt(inputData.size()));
         	
+        	//WE WILL USE THIS FOR NOW TO USE THE BASE CASE OF A LETTER A PASSED INTO OUR SYSTEM
+        	int[] currentInput = {0,0,1,0}; // must change this from a hard coded value
+        	String passedLetter = "a"; // Must CHANGE from a hard coded value
         	
-        	// DETERMINING PARITY BIT EXPECTED VALUES
-        	// This will be adjusted to expected values of the given letter
-        	int parcount = 0;
+        	setInputNodes(currentInput, inputLayer);
         	
-        	for(int i = 0; i< currentInput.length() ;i++){
-        		parcount = parcount + Character.getNumericValue(currentInput.charAt(i));//number of ones in data bit
-        		inputLayer.get(i).value = Character.getNumericValue(currentInput.charAt(i));//inputs the value into an already built structure
-        	}
-        	//sets the expected value here aka parity bit
-        	if (parcount%2==0){
-        		expected=1;
-        	}else{
-        		expected=0;
-        	}
+        	expected = ht.expectedOutputValues(passedLetter, outputLayer);
         	
         	//Running the actual program
         	feedF(inputLayer,hiddenLayer,outputLayer,expected);//neuro network algorithm(feed forward and back propagation)
@@ -198,18 +184,19 @@ public class BackProp {
         }
         
         
-        System.out.println("-----------TRAINING COMPLETED SUCCESFULLY---------------");
-        System.out.println("-----------TRAINING DATA INFORMATION---------------");
-        System.out.println("Checking for odd parity");
-        System.out.println("Input Nodes: " + inputLayerSize);
-        System.out.println("Hidden Nodes: " + hiddenLayerSize);
-        System.out.println("Output Nodes: " + outputLayerSize);
-        System.out.println("learningRateing Rate: " + learningRate);
-        System.out.println("Epochs: 10000");
-        System.out.println("Bias: 1");
-        System.out.println("Range of Weights: -1 to +1");
-        System.out.println();
-        System.out.println("SYSTEM IS NOW READY FOR USE");
+        
+//        System.out.println("-----------TRAINING COMPLETED SUCCESFULLY---------------");
+//        System.out.println("-----------TRAINING DATA INFORMATION---------------");
+//        System.out.println("Checking for odd parity");
+//        System.out.println("Input Nodes: " + inputLayerSize);
+//        System.out.println("Hidden Nodes: " + hiddenLayerSize);
+//        System.out.println("Output Nodes: " + outputLayerSize);
+//        System.out.println("learningRateing Rate: " + learningRate);
+//        System.out.println("Epochs: 10000");
+//        System.out.println("Bias: 1");
+//        System.out.println("Range of Weights: -1 to +1");
+//        System.out.println();
+//        System.out.println("SYSTEM IS NOW READY FOR USE");
         
     }
 }
