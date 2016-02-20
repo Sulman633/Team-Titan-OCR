@@ -7,8 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
@@ -47,9 +48,35 @@ public class Gui extends JFrame {
 	public void generate(){
 		
 	}
-	
-	public void save(String word){
-		
+	/**
+	 * Using a buffered and file writer the program writes to a file when the save button is clicked.
+	 * @param text - the text that is written to the file. 
+	 */
+	public void save(String text){
+		File file = new File("C:\\Users\\Sulman\\Documents\\EclipseProjects\\Team-Titan-OCR\\output.txt");
+		if(!text.equals(" ")){
+			BufferedWriter writer = null;
+			try{
+			    writer = new BufferedWriter( new FileWriter(file));
+			    writer.write(text);
+
+			}
+			catch (IOException e){
+			
+			}
+			finally{
+			    try{
+			        if ( writer != null)
+			        writer.close();
+			    }
+			    catch (IOException e){
+			    
+			    }
+			}
+		}
+		else{
+			txtErrorArea.setText("No file selected which can be saved!");
+		}
 	}
 	
 	public void displayImage(Image img){
@@ -110,6 +137,7 @@ public class Gui extends JFrame {
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//save();
 			}
 		});
 		btnSave.setFont(new Font("Tahoma", Font.PLAIN, 12));
