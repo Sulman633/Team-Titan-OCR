@@ -1,0 +1,79 @@
+
+================
+Code Conventions
+================
+
+1. The main class will only contain top level code. This means that it should contain top level modules and the code necessary for interactions between them. Other main classes should only be used for testing purposes and should be clearly indicated for this purpose.
+
+For example:
+
+	public static void main (String[] args) {
+		
+		AClass a;
+		BClass b;
+		CClass c;
+		
+		a.generateData();
+		b.modifyData(a.getData());
+		c.displayData(b.getData());
+		
+	}
+	
+2. Modules should be organized into packages of related classes. These packages should be named appropriately. The package structure should accurately reflect our design choices in terms of abstraction.
+
+For example:
+
+	Project
+	
+		Main.java
+
+		image
+			Pixel.java
+			...
+		
+		gui
+			Gui.java
+			...
+	
+3. Coding Conventions
+
+	a. Naming
+		i. Package names will be entirely lowercase.
+			e.g. test, gui, imagepreprocess
+		ii. Class names will follow uppercase camelcase.
+			e.g. public class Main, private class PixelArray
+		iii. Variable names will follow lowercase camelcase and will accurately describe the variable's utility.
+			e.g. int clusterCount, double neuralNetAccuracy
+		iv. Constants will be entirely uppercase with underscores for seperating words.
+			e.g. final double THRESHOLD, final int MAX_SIZE
+		v. Single letter variables are discouraged and should only be used for iteration. 
+		   Iteration through structures that have dimensionality should use x, y, z, etc.
+		   i, j and k should be used otherwise.
+		   
+	b. Commenting
+		i. Each class file should have a header comment. This comment should have information on the authors and the
+		   general purpose of the class, as well as interactions with other classes.
+		ii. Each function should have a comment describing the function, it's parameters and what it returns.
+		iii. Functions should be outlined with comments in areas where confusion may arise.
+		iv. Variables should have following comments where the name may not describe the variable sufficiently.
+		v. Comments will utilize javadoc features to facilitate ease of use between programmers.
+		
+	c. Structure
+		i. Variables should be declared at the top of the layer it exists in. For example, global variables will be
+		   located at the top of the class block, and local function variables will be at the top of the function block.
+		ii. Related expressions should be grouped into logical units seperated by spaces. These logical units can be
+		    commented at the programmers discresion.
+			e.g.
+				//Variable declarations.
+				int firstNumber, secondNumber, result;
+				
+				//Perform calculation.
+				result = firstNumber * secondNumber;
+				result += 100;
+				
+				System.out.println(result);
+		iii. Bracket indenting style does not matter, as long as it is consistent throughout the entire file.
+		
+If in doubt, refer to http://www.oracle.com/technetwork/java/codeconvtoc-136057.html
+		
+		
