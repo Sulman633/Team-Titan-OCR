@@ -17,15 +17,15 @@ public class Lexicon {
 	/**
 	 * The address of the mySQL server which holds the lexicon.
 	 */
-	private final String DB_URL = "jdbc:mysql://localhost/entries";
+	private final String DB_URL = "jdbc:mysql://sql5.freemysqlhosting.net/sql5107588";
 	/**
 	 * The username that will be used to log into the mySql server.
 	 */
-	private final String DB_USERNAME = "root";
+	private final String DB_USERNAME = "sql5107588";
 	/**
 	 * The password that will be used to log into the mySql server.
 	 */
-	private final String DB_PASSWORD = "";
+	private final String DB_PASSWORD = "RyLFh7bdvT";
 	
 	public Lexicon() {
 		
