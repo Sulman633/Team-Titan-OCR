@@ -14,6 +14,34 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class imgtest {
+	
+	// 20x20 array. neuralNetworkInput
+	static int[][] neuralNetworkInput = new int[20][20];
+	
+	// generates input 
+	public static void generatedInput(int[][] array, ink writing){
+		
+		for(int i=0; i<array.length; i++){
+			for(int j=0; j<array[i].length; j++){
+				array[i][j] = 0;
+			}
+		}
+		
+		for(int i=0; i<writing.set.size(); i++){
+			array[writing.set.get(i).getX()][writing.set.get(i).getY()] = 1;
+		}	
+	}
+	
+	
+	public static void print(int[][] array){
+		for(int i=0; i<array.length; i++){
+			for(int j=0; j<array[i].length; j++){
+				System.out.print(array[i][j] + ",");
+			}
+		}
+	}
+	
+	
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -21,7 +49,7 @@ public class imgtest {
 		BufferedImage img = null;
 		
 		try{//get image
-			File imgf = new File("test.jpg");
+			File imgf = new File("testCaseA.jpg");
 			img = ImageIO.read(imgf);
 		}
 		catch (IOException e) {
@@ -58,13 +86,11 @@ public class imgtest {
 		writing.findClusters(pixarray);
 		
 	
-		System.out.println(writing.set.size() + "/" + paper.set.size());
-		System.out.println(writing.clus.size());
-		for(int i=0; i<writing.clus.size();i++){
-			System.out.println(writing.clus.get(i).getArea());
-			
-		}
-
+		System.out.println("number of cluster: " + writing.set.size());
+		// 
+		System.out.println("Generate the Input");
+		generatedInput(neuralNetworkInput, writing);
+		print(neuralNetworkInput);
 		
 		
 		
