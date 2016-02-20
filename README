@@ -9,9 +9,9 @@ For example:
 
 	public static void main (String[] args) {
 		
-		A_Class a;
-		B_Class b;
-		C_Class c;
+		AClass a;
+		BClass b;
+		CClass c;
 		
 		a.generateData();
 		b.modifyData(a.getData());
@@ -19,8 +19,33 @@ For example:
 		
 	}
 	
+2. Modules should be organized into packages of related classes. These packages should be named appropriately. The package structure should accurately reflect our design choices in terms of abstraction.
 
-Modules should be organized into packages of related classes. 
+For example:
 
+Project
+	
+	Main.java
 
+	Image
+		Pixel.java
+		...
+		
+	Gui
+		Gui.java
+		...
+	
+3. Coding Conventions
 
+	a. Naming
+		i. Package names will be entirely lowercase.
+			e.g. test, gui, imagepreprocess
+		ii. Class names will follow uppercase camelcase.
+			e.g. public class Main, private class PixelArray
+		iii. Variable names will follow lowercase camelcase and will accurately describe the variable's utility.
+			e.g. int clusterCount, double neuralNetAccuracy
+		iv. Constants will be entirely uppercase with underscores for seperating words.
+			e.g. final double THRESHOLD, final int MAX_SIZE
+		v. Single letter variables are discouraged and should only be used for iteration. 
+		   Iteration through structures that have dimensionality should use x, y, z, etc.
+		   i, j and k should be used otherwise.
