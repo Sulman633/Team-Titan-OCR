@@ -56,7 +56,24 @@ For example:
 		ii. Each function should have a comment describing the function, it's parameters and what it returns.
 		iii. Functions should be outlined with comments in areas where confusion may arise.
 		iv. Variables should have following comments where the name may not describe the variable sufficiently.
-		v. Comments will utilize javadoc features to enable ease of use between programmers.
+		v. Comments will utilize javadoc features to facilitate ease of use between programmers.
 		
+	c. Structure
+		i. Variables should be declared at the top of the layer it exists in. For example, global variables will be
+		   located at the top of the class block, and local function variables will be at the top of the function block.
+		ii. Related expressions should be grouped into logical units seperated by spaces. These logical units can be
+		    commented at the programmers discresion.
+			e.g.
+				//Variable declarations.
+				int firstNumber, secondNumber, result;
+				
+				//Perform calculation.
+				result = firstNumber * secondNumber;
+				result += 100;
+				
+				System.out.println(result);
+		iii. Bracket indenting style does not matter, as long as it is consistent throughout the entire file.
+		
+If in doubt, refer to http://www.oracle.com/technetwork/java/codeconvtoc-136057.html
 		
 		
