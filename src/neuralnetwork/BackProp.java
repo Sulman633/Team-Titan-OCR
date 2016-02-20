@@ -15,7 +15,9 @@ import java.math.*;
 
 public class BackProp {
 
+	static imgtest it = new imgtest();
 	static HelperTrainer ht = new HelperTrainer();
+	static Scanner sc = new Scanner(System.in);
 
 	static double learningRate = 0.3;
 	static int alphabetSize = 56;
@@ -55,7 +57,9 @@ public class BackProp {
 	    	outputLayer.get(b).value = sigmoid(hsum); // perform sigmoid again to get output node value
 	    	
 	    	// sets the error value
-	    	outputLayer.get(b).setError(expected[b]);
+	    	if (trainNetwork){
+	    		outputLayer.get(b).setError(expected[b]);
+	    	}
     	}
     	
     	if (trainNetwork){
@@ -128,15 +132,17 @@ public class BackProp {
     }
     
     //runs through each int in the array of pixel values and sets each input node to its matching pixel
-    public static void setInputNodes(int[] inputValues, ArrayList<Neuron> inputLayer){
+    public static void setInputNodes(int[] inputValues){
     	for (int node = 0; node < inputLayer.size(); node++){
     		inputLayer.get(node).value = inputValues[node];
     	}
     }
     
     //Run this method to determine the closest match to a passed in letter
-    public String determineLetter(ArrayList<Neuron> inputLayer, ArrayList<Neuron> hiddenLayer, ArrayList<Neuron> outputLayer, int[] expected){
-    	feedF(expected, false); 
+    public static String determineLetter(int[] input){
+    	setInputNodes(input);
+    	feedF(null, false);
+    	
     	Neuron bestMatch = outputLayer.get(0);
     	for (int i = 0; i < alphabetSize; i++){
     		if (outputLayer.get(i).value > bestMatch.value){
@@ -152,14 +158,12 @@ public class BackProp {
     public static void initialization() {
     	
     	System.out.println("How many pixels in the image?");
-    	Scanner sc = new Scanner(System.in);
     	int inputLayerSize = sc.nextInt(); // Number of Input Nodes
     	System.out.println("Number of hidden nodes?");
         int hiddenLayerSize = sc.nextInt(); // Number of Hidden Nodes
     	System.out.println("Size of Alphabet is: " + alphabetSize);
         int outputLayerSize = alphabetSize; // Number of Output Nodes
         
-        sc.close(); // close the scanner to minimize memory leak
 
         // initializes the 3 layers of neurons with random weights
         Neuron tempNeuron;
@@ -199,7 +203,8 @@ public class BackProp {
     	int[] currentInput;
     	String passedLetter;
     	
-    	 for (int count = 0; count < 1000; count++){
+    	int epochs = 500;
+    	for (int count = 0; count < epochs; count++){
         
 	    	// iterate through the map
 	    	Iterator it = trainingAlphabet.entrySet().iterator();
@@ -208,7 +213,7 @@ public class BackProp {
 	    		currentInput = (int[]) pair.getValue();
 	    		passedLetter = (String) pair.getKey();
 	    		
-	    		setInputNodes(currentInput, inputLayer);
+	    		setInputNodes(currentInput);
 	    		
 	        	expected = ht.expectedOutputValues(passedLetter, outputLayer); // get the expected values
 	        	
@@ -218,11 +223,56 @@ public class BackProp {
 	        	//user output during training to tell us whats going on during training
 	        	if (count%100 == 0){
 	        		for (int nnOutputNode = 0; nnOutputNode < alphabetSize; nnOutputNode++){
-	        			System.out.println("Current output node: " + nnOutputNode + "\tOutput: " + outputLayer.get(nnOutputNode).value + "\t Error: "+ outputLayer.get(nnOutputNode).error );
+	        			System.out.println("  --  " + passedLetter + "  --  Current output node: " + nnOutputNode + "\tOutput: " + outputLayer.get(nnOutputNode).value + "\t Error: "+ outputLayer.get(nnOutputNode).error );
 	        		}
 	        	}
+	        	System.out.println(count + " / " + epochs);
 	    	}
         }
+    }
+    
+    public static void singleTrain(String letter, int[] representation){
+    	setInputNodes(representation);
+    	int[] expected = new int[outputLayer.size()];
+    	expected = ht.expectedOutputValues(letter, outputLayer); // get the expected values
+    	
+    	//Running the actual program to train this instance
+    	feedF(expected, true);
+    	System.out.print(" Train done ");
+    }
+    
+    public static void tester(Map<String, int[]> trainingAlphabet){
+    	//user testing the training!
+    	System.out.println("type '1' or '2' to test images 1 or 2 (a or b)");
+    	int in = sc.nextInt(); // Number of Input Nodes
+    	String bestLetter = "";
+    	
+    	while (in == 1 || in == 2 || in == 5 || in == 6){
+	    	if (in == 1){
+	    		bestLetter = determineLetter(it.generateCluster("testCaseA.jpg"));
+	    		System.out.println("BEST LETTER MATCH: " + bestLetter);
+	    	}
+	    	else if (in == 2){
+	    		bestLetter = determineLetter(it.generateCluster("testCaseB.jpg"));
+	    		System.out.println("BEST LETTER MATCH: " + bestLetter);
+	    	}
+	    	else if (in == 5){
+	    		int[] aNNRepresentation = it.generateCluster("testCaseA.jpg");
+	    		
+	    		for (int i = 0; i < 100; i++){
+	    			singleTrain("a", aNNRepresentation);
+	    		}
+	    	}
+	    	else if (in == 6){
+	    		int[] aNNRepresentation = it.generateCluster("testCaseB.jpg");
+	    		
+	    		for (int i = 0; i < 100; i++){
+	    			singleTrain("b", aNNRepresentation);
+	    		}
+	    	}
+	    	System.out.println("type '1' or '2' to test images 1 or 2 (a or b)");
+	    	in = sc.nextInt(); // Number of Input Nodes
+    	}
     }
     
     //  MAIN FUNCTION 
@@ -234,8 +284,9 @@ public class BackProp {
     		loadNeuralNetwork();
     	} else{
     		initialization(); //initialize a plain NN
-    		imgtest it = new imgtest();
+    		trainingAlphabet = it.generateAlphabetMap();
     		trainMethod(trainingAlphabet); //begin training of the network
     	}
+    	tester(trainingAlphabet);
     }
 }

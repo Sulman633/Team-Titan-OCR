@@ -138,11 +138,11 @@ public class imgtest {
 		
 		System.out.println(data.length);
 		
-		JFrame frame = new JFrame();
-	    JLabel label = new JLabel(new ImageIcon(img));
-	    frame.getContentPane().add(label, BorderLayout.CENTER);
-	    frame.pack();
-	    frame.setVisible(true);
+//		JFrame frame = new JFrame();
+//	    JLabel label = new JLabel(new ImageIcon(img));
+//	    frame.getContentPane().add(label, BorderLayout.CENTER);
+//	    frame.pack();
+//	    frame.setVisible(true);
 		
 		return result;
 	}
