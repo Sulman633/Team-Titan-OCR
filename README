@@ -73,6 +73,10 @@ For example:
 				
 				System.out.println(result);
 		iii. Bracket indenting style does not matter, as long as it is consistent throughout the entire file.
+		iv. Do not use magic numbers. Use variables and constants instead.
+			e.g. circumference = diameter * PI;
+				...instead of...
+			     circumference = diameter * 3.1415;
 		
 If in doubt, refer to http://www.oracle.com/technetwork/java/codeconvtoc-136057.html
 		
