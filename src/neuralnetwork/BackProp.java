@@ -164,22 +164,22 @@ public class BackProp {
         
         int[] expected = new int[outputLayer.size()]; //variable for expected value and also used as the biased value = 1
         
+        	
+    	//WE WILL USE THIS FOR NOW TO USE THE BASE CASE OF A LETTER A PASSED INTO OUR SYSTEM
+    	int[] currentInput = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,1,1,0,0,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // must change this from a hard coded value
+    	String passedLetter = "a"; // Must CHANGE from a hard coded value
+    	
+    	setInputNodes(currentInput, inputLayer);
+    	
+    	expected = ht.expectedOutputValues(passedLetter, outputLayer);
+        	
         //epoch
-        for (int count = 0; count < 10000; count++){
-        	
-        	//WE WILL USE THIS FOR NOW TO USE THE BASE CASE OF A LETTER A PASSED INTO OUR SYSTEM
-        	int[] currentInput = {0,0,1,0}; // must change this from a hard coded value
-        	String passedLetter = "a"; // Must CHANGE from a hard coded value
-        	
-        	setInputNodes(currentInput, inputLayer);
-        	
-        	expected = ht.expectedOutputValues(passedLetter, outputLayer);
-        	
+        for (int count = 0; count < 1000; count++){
         	//Running the actual program
         	feedF(inputLayer,hiddenLayer,outputLayer,expected);//neuro network algorithm(feed forward and back propagation)
         	
         	//user output during training
-        	System.out.println("Input: "+currentInput + "\t Output: " + outputLayer.get(0).value + "\t Error: "+ outputLayer.get(0).error );
+        	System.out.println("Input: "+currentInput + "\t Output: " + outputLayer.get(1).value + "\t Error: "+ outputLayer.get(1).error );
         	
         }
         
