@@ -115,7 +115,9 @@ public class Lexicon {
 				
 			}else{
 				
-				ResultSet rS = new
+				ResultSet rS = stmt.executeQuery("SELECT freq FROM entries where word = '"+newWord+"'");
+				
+				int tempFreq = rS.getInt("freq");
 				
 				stmt.executeUpdate("INSERT INTO entries VALUES ('"+newWord+"', 1)");
 				
