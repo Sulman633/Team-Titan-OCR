@@ -18,7 +18,7 @@ public class imgtest {
 	// 20x20 array. neuralNetworkInput
 	static int[][] neuralNetworkInput = new int[20][20];
 	
-	// generates input 
+	// generates input for neuralnetworks. 
 	public static void generatedInput(int[][] array, ink writing){
 		
 		for(int i=0; i<array.length; i++){
@@ -32,15 +32,23 @@ public class imgtest {
 		}	
 	}
 	
-	
-	public static void print(int[][] array){
+	/*
+	 * Converts 2d neuralNetworkInput into 1d int array
+	 * @return - 400 pixels back
+	 */
+	public static int[] convert(int[][] array){
+		int[] result = new int[array.length*array[0].length]; 
+		
+		
 		for(int i=0; i<array.length; i++){
+			int[] row = array[i];
 			for(int j=0; j<array[i].length; j++){
-				System.out.print(array[i][j] + ",");
+				result[i*row.length+j] = array[i][j];
 			}
 		}
+		
+		return result;
 	}
-	
 	
 
 	public static void main(String[] args) {
@@ -49,7 +57,7 @@ public class imgtest {
 		BufferedImage img = null;
 		
 		try{//get image
-			File imgf = new File("testCaseA.jpg");
+			File imgf = new File("testCaseB.jpg");
 			img = ImageIO.read(imgf);
 		}
 		catch (IOException e) {
@@ -90,7 +98,11 @@ public class imgtest {
 		// 
 		System.out.println("Generate the Input");
 		generatedInput(neuralNetworkInput, writing);
-		print(neuralNetworkInput);
+		int[] result = convert(neuralNetworkInput);
+		
+		for(int i=0; i<result.length; i++){
+			System.out.print(result[i] + ",");
+		}
 		
 		
 		
