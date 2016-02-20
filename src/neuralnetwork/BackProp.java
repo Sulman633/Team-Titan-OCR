@@ -6,12 +6,17 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
+
+import preprocess.imgtest;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.*;
 
 public class BackProp {
+
 	static HelperTrainer ht = new HelperTrainer();
+
 	static double learningRate = 0.3;
 	static int alphabetSize = 56;
 	
@@ -176,11 +181,13 @@ public class BackProp {
         
         // set output layer representations (ie first output node represents an "a")
         outputLayer = ht.setOutputNodeRepresentations(outputLayer);
+
     }
     
     
     // initializes a neural network with saved weights
     public static void loadNeuralNetwork(){
+
     	
     }
     

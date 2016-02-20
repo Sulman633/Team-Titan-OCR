@@ -17,14 +17,17 @@ public class HelperTrainer {
 		return output;
 	}
 	
+	// 
 	public int[] expectedOutputValues(String passedLetter, ArrayList<Neuron> output){
 		int[] expectedVals = new int[output.size()];
 		
 		for (int node = 0; node < output.size(); node++){
 			if (passedLetter.equals(output.get(node).outputNodeRepresentation)){
+				output.get(node).setError(1);
 				expectedVals[node] = 1;
 			}
 			else{
+				output.get(node).setError(0);
 				expectedVals[node] = 0;
 			}
 		}
