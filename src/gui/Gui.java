@@ -5,30 +5,41 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Gui extends JFrame {
 	private JPanel contentPane;
-	private JTextField txtErrorArea;
+	private JTextField txtErrorArea; //This is used to display errors
+	private JFileChooser fc;
+	private BufferedImage bufferedImage;
 	
 	public Gui(){
+		//Creates the JFrame
 		initializeGui();
+		pack();
 		setVisible(true);
 		txtErrorArea.setEditable(false);
 	}
-	
+	//This method will be used to start the pre-processing 
 	public void open(){
 		
 	}
@@ -60,8 +71,31 @@ public class Gui extends JFrame {
 		beforePanel.setBackground(Color.WHITE);
 		
 		JButton btnOpen = new JButton("Open");
+		//The action listener for Open button and uses JFileChooser
 		btnOpen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//Helps to filter the file types
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files", "jpg", "png", "gif", "jpeg", "pdf");
+				fc = new JFileChooser();
+				fc.setFileFilter(filter);
+				fc.setAcceptAllFileFilterUsed(false);
+				File temp = new File(System.getProperty("user.home"));
+				fc.setCurrentDirectory(temp);
+				int returnValue = fc.showOpenDialog(null);
+			    if (returnValue == JFileChooser.APPROVE_OPTION) {
+			        File selectedFile = fc.getSelectedFile();
+			        try {
+						bufferedImage = ImageIO.read(selectedFile);
+						
+						JLabel picLabel = new JLabel();
+						picLabel.setIcon(new ImageIcon(bufferedImage));
+						picLabel.setBounds(0, 0, beforePanel.getWidth(), beforePanel.getHeight());
+						beforePanel.add(picLabel);
+						beforePanel.repaint();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+			    }
 			}
 		});
 		btnOpen.setFont(new Font("Tahoma", Font.PLAIN, 12));
