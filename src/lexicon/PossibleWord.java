@@ -1,6 +1,6 @@
 package lexicon;
 /**
- * Wrapper class to hold a word and its frequency of use. Will be returned by the lexicon to the decision making agent that will judge what word the user has written, a decision that is based on, among a number of factors, the frequency of use.
+ * Wrapper class to hold a word and its frequency of use. Will be returned by the {@link Lexicon} to the decision making agent that will judge what word the user has written, a decision that is based on, among a number of factors, the frequency of use.
  * @author Nathan Van Dyken
  */
 public class PossibleWord implements Comparable<PossibleWord> {
@@ -23,6 +23,9 @@ public class PossibleWord implements Comparable<PossibleWord> {
 		FREQ = newFreq;
 		
 	}
+	/**
+	 * Compares this PossibleWord to another possible word, following the convention of the {@link Comparable} interface. The key that is compared is the frequency of the word, and a negative integer, zero, or a positive integer are returned if this object is less than, equal to, or greater than the specified object.
+	 */
 	@Override
 	public int compareTo(PossibleWord o) {
 		
