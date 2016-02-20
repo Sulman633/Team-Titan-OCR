@@ -23,17 +23,17 @@ For example:
 
 For example:
 
-Project
+	Project
 	
-	Main.java
+		Main.java
 
-	Image
-		Pixel.java
-		...
+		image
+			Pixel.java
+			...
 		
-	Gui
-		Gui.java
-		...
+		gui
+			Gui.java
+			...
 	
 3. Coding Conventions
 
@@ -49,3 +49,14 @@ Project
 		v. Single letter variables are discouraged and should only be used for iteration. 
 		   Iteration through structures that have dimensionality should use x, y, z, etc.
 		   i, j and k should be used otherwise.
+		   
+	b. Commenting
+		i. Each class file should have a header comment. This comment should have information on the authors and the
+		   general purpose of the class, as well as interactions with other classes.
+		ii. Each function should have a comment describing the function, it's parameters and what it returns.
+		iii. Functions should be outlined with comments in areas where confusion may arise.
+		iv. Variables should have following comments where the name may not describe the variable sufficiently.
+		v. Comments will utilize javadoc features to enable ease of use between programmers.
+		
+		
+		
