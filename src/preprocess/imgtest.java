@@ -7,6 +7,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -50,14 +53,16 @@ public class imgtest {
 		return result;
 	}
 	
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		
+	/**
+	 * generates the cluster and opens up the image in a bufferedImage
+	 * @param fileName
+	 * @return - returns the cluster array; containing 400 pixels
+	 */
+	public static int[] generateCluster(String fileName){
 		BufferedImage img = null;
 		
 		try{//get image
-			File imgf = new File("testCaseB.jpg");
+			File imgf = new File(fileName);
 			img = ImageIO.read(imgf);
 		}
 		catch (IOException e) {
@@ -91,21 +96,15 @@ public class imgtest {
 			}
 		}
 		
+		
 		writing.findClusters(pixarray);
 		
-	
+		
 		System.out.println("number of cluster: " + writing.set.size());
 		// 
 		System.out.println("Generate the Input");
 		generatedInput(neuralNetworkInput, writing);
 		int[] result = convert(neuralNetworkInput);
-		
-		for(int i=0; i<result.length; i++){
-			System.out.print(result[i] + ",");
-		}
-		
-		
-		
 		
 		//convert from a 2d to 1d array 
 		int[] data = new int[h*w];
@@ -115,10 +114,6 @@ public class imgtest {
 				data[(i*w)+j]=imgarray[j][i];
 			}
 		}
-	
-		
-		
-		
 		
 		
 		for(int i=0; i<data.length;i++){
@@ -144,11 +139,69 @@ public class imgtest {
 		System.out.println(data.length);
 		
 		JFrame frame = new JFrame();
-		  JLabel label = new JLabel(new ImageIcon(img));
-		  frame.getContentPane().add(label, BorderLayout.CENTER);
-		  frame.pack();
-		  frame.setVisible(true);
-
+	    JLabel label = new JLabel(new ImageIcon(img));
+	    frame.getContentPane().add(label, BorderLayout.CENTER);
+	    frame.pack();
+	    frame.setVisible(true);
+		
+		return result;
+	}
+	
+	/**
+	 * AlphabetMap of all the cases and add it the hashMap
+	 * @return
+	 */
+	public static Map<String, int[]> generateAlphabetMap(){
+		Map<String, int[]> alphabetMap = new HashMap<String, int[]>();
+		
+		for(int k=1; k<3; k++){
+			String fileName = "testCase_" + k + ".jpg";
+			
+			System.out.println(fileName);
+			
+			int[] result = generateCluster(fileName);
+			printArray(result);
+			
+			if(fileName.equals("testCase_1.jpg")){
+				alphabetMap.put("a", result);
+			}else if(fileName.equals("testCase_2.jpg")){
+				alphabetMap.put("b", result);
+			}
+	
+		}
+			
+		return alphabetMap;
+	}
+	
+	/**
+	 * prints the hashMap
+	 * @param mp
+	 */
+	public static void printMap(Map mp) {
+	    Iterator it = mp.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry pair = (Map.Entry)it.next();
+	        System.out.println(pair.getKey() + " = " + pair.getValue());
+	        it.remove(); // avoids a ConcurrentModificationException
+	    }
+	}
+	
+	/**
+	 * Print the 1d array
+	 * @param array
+	 */
+	public static void printArray(int[] array){
+		for(int i=0; i<array.length; i++){
+			System.out.print(array[i]);
+		}
+		System.out.println();
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Map<String, int[]> alphabetMap = generateAlphabetMap();
+		
+		printMap(alphabetMap);
 	}
 
 }
