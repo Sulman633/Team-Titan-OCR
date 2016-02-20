@@ -2,7 +2,9 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -18,6 +20,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.GroupLayout.Alignment;
@@ -40,6 +43,22 @@ public class Gui extends JFrame {
 		setVisible(true);
 		txtErrorArea.setEditable(false);
 	}
+	/**
+	 * Resizes an image using a Graphics2D object backed by a BufferedImage.
+	 * @param srcImg - source image to scale
+	 * @param w - desired width
+	 * @param h - desired height
+	 * @return - the new resized image
+	 */
+	private BufferedImage scaledImage(BufferedImage srcImg, int w, int h){
+	    BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TRANSLUCENT);
+	    Graphics2D g2 = resizedImg.createGraphics();
+	    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	    g2.drawImage(srcImg, 0, 0, w, h, null);
+	    g2.dispose();
+	    return resizedImg;
+	}
+	
 	//This method will be used to start the pre-processing 
 	public void open(){
 		
@@ -86,6 +105,7 @@ public class Gui extends JFrame {
 	public void display(String word){
 		
 	}
+	 
 	private void initializeGui() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 728, 530);
@@ -113,7 +133,8 @@ public class Gui extends JFrame {
 			        File selectedFile = fc.getSelectedFile();
 			        try {
 						bufferedImage = ImageIO.read(selectedFile);
-						
+						bufferedImage = scaledImage(bufferedImage, beforePanel.getWidth(),beforePanel.getHeight());
+						beforePanel.removeAll();
 						JLabel picLabel = new JLabel();
 						picLabel.setIcon(new ImageIcon(bufferedImage));
 						picLabel.setBounds(0, 0, beforePanel.getWidth(), beforePanel.getHeight());
@@ -137,7 +158,6 @@ public class Gui extends JFrame {
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//save();
 			}
 		});
 		btnSave.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -153,8 +173,10 @@ public class Gui extends JFrame {
 		txtErrorArea.setColumns(10);
 		
 		JTextArea txtAreaAfter = new JTextArea();
+		txtAreaAfter.setLineWrap(true);
 		txtAreaAfter.setBorder(BorderFactory.createLineBorder(Color.black));
 		txtAreaAfter.setBackground(Color.WHITE);
+		JScrollPane scrollPane = new JScrollPane(txtAreaAfter);
 		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
@@ -165,7 +187,7 @@ public class Gui extends JFrame {
 						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
 							.addComponent(beforePanel, GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(txtAreaAfter, GroupLayout.PREFERRED_SIZE, 338, GroupLayout.PREFERRED_SIZE)
+							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 338, GroupLayout.PREFERRED_SIZE)
 							.addGap(1))
 						.addGroup(gl_contentPane.createSequentialGroup()
 							.addComponent(btnOpen, GroupLayout.PREFERRED_SIZE, 194, GroupLayout.PREFERRED_SIZE)
@@ -193,7 +215,7 @@ public class Gui extends JFrame {
 						.addComponent(lblAfter))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(txtAreaAfter, GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
 						.addComponent(beforePanel, GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(txtErrorArea, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
