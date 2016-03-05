@@ -4,9 +4,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 /**
- * Used by the decision making agent to select a word from a list of possibilities, the lexicon generates a list of candidate words, along with a frequency of use, when presented with an incomplete word or list of words. Words are pulled from a pre-existing mySQL database that is loaded from a specified address. The lexicon also updates the frequency of use of a specific word in the aforementioned database when the word is chosen as the best candidate by the decision making agent. 
+ * Used by the decision making agent to select a word from a list of possibilities, the lexicon generates a list of candidate words, along with a frequency of use, when presented with an incomplete word or list of words.
+ * Words are pulled from a pre-existing mySQL database that is loaded from a specified address. The lexicon also updates the frequency of use of a specific word in the aforementioned database when the word is chosen as the best candidate by the decision making agent. 
  * @author Nathan Van Dyken
- *
  */
 public class Lexicon {
 
@@ -56,7 +56,7 @@ public class Lexicon {
 	}
 	/**
 	 * Called by the decision making agent; accepts a list of candidate partial-words and returns complete words that are possibly the words that the user attempted to write.
-	 * @param candidates an ArrayList of the candidate Strings to be evaluated, with the unknown characters replaced with underscore characters ('_'). "Unknown characters" refer to characters that have a level of confidence that falls below a certain level of tolerance, specified in the decision making agent.
+	 * @param candidates - an ArrayList of the candidate Strings to be evaluated, with the unknown characters replaced with underscore characters ('_'). "Unknown characters" refer to characters that have a level of confidence that falls below a certain level of tolerance, specified in the decision making agent.
 	 * @return an ArrayList of possible words with a frequency of use for each word.
 	 */
 	public ArrayList<PossibleWord> getMatches( ArrayList<String> candidates ){
@@ -74,7 +74,7 @@ public class Lexicon {
 	}
 	/**
 	 * Same as {@code Lexicon.getMatches(ArrayList<String> candidates)}, except that it accepts and returns arrays as opposed to  ArrayLists.
-	 * @param candidates an array of the candidate Strings to be evaluated, with the unknown characters replaced with underscore characters ('_'). "Unknown characters" refer to characters that have a level of confidence that falls below a certain level of tolerance, specified in the decision making agent.
+	 * @param candidates - an array of the candidate Strings to be evaluated, with the unknown characters replaced with underscore characters ('_'). "Unknown characters" refer to characters that have a level of confidence that falls below a certain level of tolerance, specified in the decision making agent.
 	 * @return an array of possible words with a frequency of use for each word.
 	 */
 	public PossibleWord [] getMatches( String [] candidates ){
@@ -86,7 +86,7 @@ public class Lexicon {
 	}
 	/**
 	 * Checks if the specified character pattern is present in the DB and returns matches, along with a frequency of use for each match.
-	 * @param candidateWord	the character pattern that will be looked up in the DB.
+	 * @param candidateWord - the character pattern that will be looked up in the DB.
 	 * @return an ArrayList of possible words, along with a frequency of use for each word.
 	 */
 	private ArrayList<PossibleWord> getPossibilities( String candidateWord ){
@@ -120,11 +120,15 @@ public class Lexicon {
 	}
 	/**
 	 * Updates the database to reflect the use of the specified word. If the word does not exist in the DB, a record is created and the frequency of use of the word is initialized to one. Else, if the word does exist, the frequency of use of the word is incremented by one.
-	 * @param newWord the word for which the frequency of use should be updated.
+	 * @param newWord - the word for which the frequency of use should be updated.
 	 */
-	public void useWord( String newWord ){
+	public void useWord( String newWord ) throws InvalidWordException{
 		
 		newWord = newWord.toLowerCase();
+		
+		String message = isValidWord(newWord);
+		
+		if( message != null) throw new InvalidWordException(message);
 		
 		try {
 			
@@ -149,6 +153,22 @@ public class Lexicon {
 			System.out.println("Exception caught in Lexicon when adding a word to the DB in the addWord method.");
 			e.printStackTrace();
 		}
+		
+	}
+	/**
+	 * Checks the validity of a word that is to be inserted into the database.
+	 * @param word - the string to be checked. 
+	 * @return an empty string if the word passed in can legally be inserted into the database without causing an exception.  Else, the message corresponding with the issue is returned.
+	 */
+	private String isValidWord(String word) {
+		
+		if( word.equals("") ) return "An empty string can not be inserted in the database as a word.";
+		
+		if( word.length() > 25 ) return "The provided word exceeds the 25 character limit of the database.";
+		
+		
+		
+		return "";
 		
 	}
 	

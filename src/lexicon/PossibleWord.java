@@ -14,8 +14,8 @@ public class PossibleWord implements Comparable<PossibleWord> {
 	public final int FREQ;
 	/**
 	 * Default constructor to initialize the two fields with their values. As this class is only a wrapper, no manipulation of the data is necessary.
-	 * @param newWord the word to be stored in this instance of the wrapper class.
-	 * @param newFreq the frequency of use of word stored in this instance of the wrapper class.
+	 * @param newWord - the word to be stored in this instance of the wrapper class.
+	 * @param newFreq - the frequency of use of word stored in this instance of the wrapper class.
 	 */
 	PossibleWord( String newWord, int newFreq ) {
 
