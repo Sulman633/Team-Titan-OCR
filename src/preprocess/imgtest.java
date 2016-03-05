@@ -17,6 +17,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class imgtest {
+	static BufferedImage img = null;
+	
 	
 	// 20x20 array. neuralNetworkInput
 	static int[][] neuralNetworkInput = new int[20][20];
@@ -59,7 +61,6 @@ public class imgtest {
 	 * @return - returns the cluster array; containing 400 pixels
 	 */
 	public static int[] generateCluster(String fileName){
-		BufferedImage img = null;
 		
 		try{//get image
 			File imgf = new File(fileName);
@@ -169,7 +170,7 @@ public class imgtest {
 			}
 	
 		}
-			
+		
 		return alphabetMap;
 	}
 	
