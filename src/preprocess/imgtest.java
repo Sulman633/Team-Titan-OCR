@@ -146,15 +146,22 @@ public class imgtest {
 	 * AlphabetMap of all the cases and add it the hashMap
 	 * @return
 	 */
-	public static Map<String, int[]> generateAlphabetMap(){
+	public static Map<String, int[]> generateAlphabetMap(boolean tenPixels){
 		Map<String, int[]> alphabetMap = new HashMap<String, int[]>();
 		
 		String[] alph1 = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","lowera","lowerb","lowerc","lowerd","lowere","lowerf","lowerg","lowerh","loweri","lowerj","lowerk","lowerl","lowerm","lowern","lowero","lowerp","lowerq","lowerr","lowers","lowert","loweru","lowerv","lowerw","lowerx","lowery","lowerz"};
 		
 		
 		String[] alphRep = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
+		
 		for(int k=26; k<32; k++){
-			String fileName = alph1[k] + ".jpg";
+			String fileName;
+			if (tenPixels){
+				fileName = "Pixel10letters/" + alph1[k] + ".jpg";
+			}
+			else {
+				fileName = alph1[k] + ".jpg";
+			}
 			
 			System.out.println(fileName);
 			
@@ -194,7 +201,7 @@ public class imgtest {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Map<String, int[]> alphabetMap = generateAlphabetMap();
+		Map<String, int[]> alphabetMap = generateAlphabetMap(false);
 		
 		printMap(alphabetMap);
 	}

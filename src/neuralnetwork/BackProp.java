@@ -412,17 +412,24 @@ public class BackProp {
     
     //  MAIN FUNCTION 
     public static void main(String[] args) {
-    	boolean productionMode = true; // Are we running a pre trained neural network?
+    	boolean productionMode = false; // Are we running a pre trained neural network?
+    	boolean letterSize = false; //FALSE = 20x20 size letters, TRUE = 10x10 size letters
+    	
     	Map<String, int[]> trainingAlphabet = new HashMap<String, int[]>();
     	
     	if (productionMode){
+    		
     		initialization(); //initialize a plain NN
     		loadNeuralNetwork();
+    		
     	} else{
     		initialization(); //initialize a plain NN
-    		trainingAlphabet = it.generateAlphabetMap();
+    		
+    		trainingAlphabet = it.generateAlphabetMap(letterSize);
+    		
     		trainMethod(trainingAlphabet); //begin training of the network
     	}
+    	
     	tester(trainingAlphabet);
     }
 }
