@@ -6,15 +6,9 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 
 public class imgtest {
 	static BufferedImage img = null;
@@ -139,11 +133,11 @@ public class imgtest {
 		
 		System.out.println(data.length);
 		
-		JFrame frame = new JFrame();
-	    JLabel label = new JLabel(new ImageIcon(img));
-	    frame.getContentPane().add(label, BorderLayout.CENTER);
-	    frame.pack();
-	    frame.setVisible(true);
+//		JFrame frame = new JFrame();
+//	    JLabel label = new JLabel(new ImageIcon(img));
+//	    frame.getContentPane().add(label, BorderLayout.CENTER);
+//	    frame.pack();
+//	    frame.setVisible(true);
 		
 		return result;
 	}
@@ -155,19 +149,17 @@ public class imgtest {
 	public static Map<String, int[]> generateAlphabetMap(){
 		Map<String, int[]> alphabetMap = new HashMap<String, int[]>();
 		
-		for(int k=1; k<3; k++){
-			String fileName = "testCase_" + k + ".jpg";
+		String[] alph = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","lowera","lowerb","lowerc","lowerd","lowere","lowerf","lowerg","lowerh","loweri","lowerj","lowerk","lowerl","lowerm","lowern","lowero","lowerp","lowerq","lowerr","lowers","lowert","loweru","lowerv","lowerw","lowerx","lowery","lowerz"};
+		String[] alphRep = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
+		for(int k=26; k<32; k++){
+			String fileName = alph[k] + ".jpg";
 			
 			System.out.println(fileName);
 			
 			int[] result = generateCluster(fileName);
 			printArray(result);
 			
-			if(fileName.equals("testCase_1.jpg")){
-				alphabetMap.put("a", result);
-			}else if(fileName.equals("testCase_2.jpg")){
-				alphabetMap.put("b", result);
-			}
+			alphabetMap.put(alphRep[k], result);
 	
 		}
 		
