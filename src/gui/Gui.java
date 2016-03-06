@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
+
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
@@ -30,16 +32,22 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+
 public class Gui extends JFrame {
-	private JPanel contentPane;
+	private JPanel contentPane; //The content pane on the JFrame
 	private JTextField txtErrorArea; //This is used to display errors
-	private JFileChooser fc;
-	private BufferedImage bufferedImage;
+	private JFileChooser fc; //The File Chooser
+	private BufferedImage bufferedImage; //The BufferedImage to passed on after retrieving the info
+	private JPanel beforePanel; //The display panel on the left for displaying 
+	private JTextArea txtAreaAfter; //The text area that it will be written to on the right
+	private PDDocument document;
 	
 	public Gui(){
 		//Creates the JFrame
-		initializeGui();
-		pack();
+		initializeGui(); //Create the GUI 
+		pack(); //Keeps it locked resolution
 		setVisible(true);
 		txtErrorArea.setEditable(false);
 	}
@@ -60,18 +68,80 @@ public class Gui extends JFrame {
 	}
 	
 	//This method will be used to start the pre-processing 
-	public void open(){
+	private void open(){
+		//Helps to filter the file types
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files", "jpg", "png", "gif", "jpeg", "pdf");
+		fc = new JFileChooser();
+		fc.setFileFilter(filter); //Sets the filter for the FileChooser
+		fc.setAcceptAllFileFilterUsed(false); //Removes the "all files" option from the file chooser
+		File temp = new File(System.getProperty("user.home"));
+		fc.setCurrentDirectory(temp);
+		int returnValue = fc.showOpenDialog(null);
+		
+	    if (returnValue == JFileChooser.APPROVE_OPTION) {
+	        /*
+	         * These four lines get name of the file and gets
+	         * the extension of the file to compare it to 
+	         * the conditional statement.
+	         */
+	    	File selectedFile = fc.getSelectedFile(); //Stores the selected file into a variable
+	        String fileName = selectedFile.getName(); //Gets the name the file
+	        int index = selectedFile.getName().lastIndexOf('.');
+	        String newFileName = fileName.substring(index); //Gets the extension
+	        /*
+	         * If PDF extension then use the PDFBox library to convert it
+	         */
+	        if(".pdf".equals(newFileName)){
+	        	try {
+	        		System.out.println("This is a test");
+	        		document = PDDocument.load(selectedFile); //Loads the PDF file
+					@SuppressWarnings("unchecked")
+					List<PDPage> list = document.getDocumentCatalog().getAllPages(); //Gets all of the pages of the PDF
+	        		PDPage page = list.get(0);
+	        		bufferedImage = page.convertToImage(); //Converts the PDF
+					//Scales the bufferedImage to the size of the JPanel for displaying. 
+					bufferedImage = scaledImage(bufferedImage, beforePanel.getWidth(),beforePanel.getHeight());
+					//Cleans the JPanel before displaying.
+					beforePanel.removeAll();
+					//Create a new JPanel to hold the image with the same dimensions as the JPanel.
+					JLabel picLabel = new JLabel();
+					picLabel.setIcon(new ImageIcon(bufferedImage));
+					picLabel.setBounds(0, 0, beforePanel.getWidth(), beforePanel.getHeight());
+					beforePanel.add(picLabel);
+					beforePanel.repaint(); //Redo the rendering for JPanel
+	        		
+	        	} catch (IOException e) {
+	        		e.printStackTrace();
+	        	}
+	        }else{
+		        try {
+					bufferedImage = ImageIO.read(selectedFile); //Converts the file into a BufferedImage
+					//Scales the bufferedImage to the size of the JPanel for displaying. 
+					bufferedImage = scaledImage(bufferedImage, beforePanel.getWidth(),beforePanel.getHeight());
+					//Cleans the JPanel before displaying.
+					beforePanel.removeAll();
+					//Create a new JPanel to hold the image with the same dimensions as the JPanel.
+					JLabel picLabel = new JLabel();
+					picLabel.setIcon(new ImageIcon(bufferedImage));
+					picLabel.setBounds(0, 0, beforePanel.getWidth(), beforePanel.getHeight());
+					beforePanel.add(picLabel);
+					beforePanel.repaint();
+				} catch (IOException e1) {
+					txtErrorArea.setText("Error! Wrong Image format");
+				}
+	        }
+	    }
+	}
+	//Generates the document after converting it 
+	private void generate(){
 		
 	}
 	
-	public void generate(){
-		
-	}
 	/**
 	 * Using a buffered and file writer the program writes to a file when the save button is clicked.
 	 * @param text - the text that is written to the file. 
 	 */
-	public void save(String text){
+	private void save(String text){
 		File file = new File("C:\\Users\\Sulman\\Documents\\EclipseProjects\\Team-Titan-OCR\\output.txt");
 		if(!text.equals(" ")){
 			BufferedWriter writer = null;
@@ -105,7 +175,10 @@ public class Gui extends JFrame {
 	public void display(String word){
 		
 	}
-	 
+	/*
+	 * Creates the GUI with appropriate buttons and their 
+	 * corresponding action listeners 
+	 */
 	private void initializeGui() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 728, 530);
@@ -113,41 +186,19 @@ public class Gui extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
-		JPanel beforePanel = new JPanel();
+		beforePanel = new JPanel();
 		beforePanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		beforePanel.setBackground(Color.WHITE);
 		
 		JButton btnOpen = new JButton("Open");
-		//The action listener for Open button and uses JFileChooser
+		//The action listener for Open button 
 		btnOpen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//Helps to filter the file types
-				FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files", "jpg", "png", "gif", "jpeg", "pdf");
-				fc = new JFileChooser();
-				fc.setFileFilter(filter);
-				fc.setAcceptAllFileFilterUsed(false);
-				File temp = new File(System.getProperty("user.home"));
-				fc.setCurrentDirectory(temp);
-				int returnValue = fc.showOpenDialog(null);
-			    if (returnValue == JFileChooser.APPROVE_OPTION) {
-			        File selectedFile = fc.getSelectedFile();
-			        try {
-						bufferedImage = ImageIO.read(selectedFile);
-						bufferedImage = scaledImage(bufferedImage, beforePanel.getWidth(),beforePanel.getHeight());
-						beforePanel.removeAll();
-						JLabel picLabel = new JLabel();
-						picLabel.setIcon(new ImageIcon(bufferedImage));
-						picLabel.setBounds(0, 0, beforePanel.getWidth(), beforePanel.getHeight());
-						beforePanel.add(picLabel);
-						beforePanel.repaint();
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-			    }
+				open(); //Starts the open process
 			}
 		});
 		btnOpen.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		
+		//The action listener for Generate Button
 		JButton btnGenerate = new JButton("Generate");
 		btnGenerate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -158,6 +209,7 @@ public class Gui extends JFrame {
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 			}
 		});
 		btnSave.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -172,7 +224,7 @@ public class Gui extends JFrame {
 		txtErrorArea.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		txtErrorArea.setColumns(10);
 		
-		JTextArea txtAreaAfter = new JTextArea();
+		txtAreaAfter = new JTextArea();
 		txtAreaAfter.setLineWrap(true);
 		txtAreaAfter.setBorder(BorderFactory.createLineBorder(Color.black));
 		txtAreaAfter.setBackground(Color.WHITE);
