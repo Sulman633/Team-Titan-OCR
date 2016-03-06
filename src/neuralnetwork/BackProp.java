@@ -1,5 +1,11 @@
 package neuralnetwork;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 import preprocess.imgtest;
@@ -11,9 +17,12 @@ public class BackProp {
 	static imgtest it = new imgtest();
 	static HelperTrainer ht = new HelperTrainer();
 	static Scanner sc = new Scanner(System.in);
+	
 
 	static double learningRate = 0.3;
 	static int alphabetSize = 56;
+	
+	static String fileName = "NNSave.txt";
 	
 	// 3 layer structure of the neural network
 	static ArrayList<Neuron> inputLayer = new ArrayList<Neuron>();
@@ -179,6 +188,7 @@ public class BackProp {
      */
     public static void initialization() {
     	
+    	System.out.println("If you are loading in a save file, ENSURE the following settings are the same!!");
     	System.out.println("How many pixels in the image?");
     	int inputLayerSize = sc.nextInt(); // Number of Input Nodes
     	System.out.println("Number of hidden nodes?");
@@ -214,8 +224,82 @@ public class BackProp {
     /**
      * initializes a neural network with saved weights
      */
-    public static void loadNeuralNetwork(){
+    //DO NOT CHANGE WITHOUT CREATING A MATCHING LOAD METHOD (Or just tell matt)
+    public static void saveNeuralNetwork(){
+    	System.out.println("Beginning save");
+    	
+    	try {
+            // Assume default encoding.
+            FileWriter fileWriter = new FileWriter(fileName);
 
+            // Always wrap FileWriter in BufferedWriter.
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            
+            //get weights from input to hidden layers
+        	for (int inputNode = 0; inputNode < inputLayer.size(); inputNode++){
+        		for (int hiddenNode = 0; hiddenNode < hiddenLayer.size(); hiddenNode++ ){
+        			bufferedWriter.write(inputLayer.get(inputNode).weight.get(hiddenNode).toString());
+                    bufferedWriter.newLine();
+        		}
+        	}
+        	
+        	System.out.println();
+        	//get weights from hidden to output nodes
+        	for (int hiddenNode = 0; hiddenNode < hiddenLayer.size(); hiddenNode++){
+        		for (int outputNode = 0; outputNode < outputLayer.size(); outputNode++ ){
+        			bufferedWriter.write(hiddenLayer.get(hiddenNode).weight.get(outputNode).toString());
+                    bufferedWriter.newLine();
+        		}
+        	}
+
+            // Always close files.
+            bufferedWriter.close();
+        }
+        catch(IOException ex) {
+            System.out.println("Error writing to file '"+ fileName + "'");
+            // Or we could just do this:
+            // ex.printStackTrace();
+        }
+    	
+    	System.out.println("Save Complete");
+    }
+    
+    
+    //loads in the neural network from the save file
+    //DO NOT CHANGE WITHOUT CREATING A MATCHING SAVE METHOD (Or just tell matt)
+    public static void loadNeuralNetwork(){
+    	
+    	try {
+            FileReader fileReader = new FileReader(fileName);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+          //get weights from input to hidden layers
+        	for (int inputNode = 0; inputNode < inputLayer.size(); inputNode++){
+        		for (int hiddenNode = 0; hiddenNode < hiddenLayer.size(); hiddenNode++ ){
+        			inputLayer.get(inputNode).weight.set(hiddenNode, Double.parseDouble(bufferedReader.readLine()));
+        		}
+        	}
+        	
+        	System.out.println();
+        	//get weights from hidden to output nodes
+        	for (int hiddenNode = 0; hiddenNode < hiddenLayer.size(); hiddenNode++){
+        		for (int outputNode = 0; outputNode < outputLayer.size(); outputNode++ ){
+        			hiddenLayer.get(hiddenNode).weight.set(outputNode, Double.parseDouble(bufferedReader.readLine()));
+        		}
+        	}
+            
+            // Always close files.
+            bufferedReader.close();         
+        }
+        catch(FileNotFoundException ex) {
+            System.out.println("No file found: '" + fileName + "'");
+        }
+    	catch(IOException ex) {
+    		System.out.println("An Error occured when trying to load the save file :(");
+    	}
+    	//TODO open save file and set weight to node
+    	
+    	
     	
     }
     
@@ -284,7 +368,7 @@ public class BackProp {
     	int in = sc.nextInt(); // Number of Input Nodes
     	String bestLetter = "";
     	
-    	while (in == 1 || in == 2 || in == 5 || in == 6){
+    	while (in == 1 || in == 2 || in == 5 || in == 6 || in == 7){
 	    	if (in == 1){
 	    		bestLetter = determineLetter(it.generateCluster("testCaseA.jpg"));
 	    		for (int nnOutputNode = 0; nnOutputNode < alphabetSize; nnOutputNode++){
@@ -304,16 +388,22 @@ public class BackProp {
 	    		for (int j = 0; j < 52; j ++){
 	    			System.out.println(aNNRepresentation[j]);
 	    		}
-	    		for (int i = 0; i < 1; i++){
+	    		for (int i = 0; i < 100; i++){
 	    			singleTrain("a", aNNRepresentation);
 	    		}
 	    	}
 	    	else if (in == 6){
 	    		int[] aNNRepresentation = it.generateCluster("testCaseB.jpg");
-	    		
+	    		for (int j = 0; j < 52; j ++){
+	    			System.out.println(aNNRepresentation[j]);
+	    		}
 	    		for (int i = 0; i < 100; i++){
 	    			singleTrain("b", aNNRepresentation);
 	    		}
+	    	}
+	    	else if (in == 7) {
+	    		System.out.println("Save");
+	    		saveNeuralNetwork();
 	    	}
 	    	System.out.println("type '1' or '2' to test images 1 or 2 (a or b)");
 	    	in = sc.nextInt(); // Number of Input Nodes
@@ -322,10 +412,11 @@ public class BackProp {
     
     //  MAIN FUNCTION 
     public static void main(String[] args) {
-    	boolean productionMode = false; // Are we running a pre trained neural network?
+    	boolean productionMode = true; // Are we running a pre trained neural network?
     	Map<String, int[]> trainingAlphabet = new HashMap<String, int[]>();
     	
     	if (productionMode){
+    		initialization(); //initialize a plain NN
     		loadNeuralNetwork();
     	} else{
     		initialization(); //initialize a plain NN

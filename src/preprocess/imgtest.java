@@ -149,10 +149,12 @@ public class imgtest {
 	public static Map<String, int[]> generateAlphabetMap(){
 		Map<String, int[]> alphabetMap = new HashMap<String, int[]>();
 		
-		String[] alph = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","lowera","lowerb","lowerc","lowerd","lowere","lowerf","lowerg","lowerh","loweri","lowerj","lowerk","lowerl","lowerm","lowern","lowero","lowerp","lowerq","lowerr","lowers","lowert","loweru","lowerv","lowerw","lowerx","lowery","lowerz"};
+		String[] alph1 = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","lowera","lowerb","lowerc","lowerd","lowere","lowerf","lowerg","lowerh","loweri","lowerj","lowerk","lowerl","lowerm","lowern","lowero","lowerp","lowerq","lowerr","lowers","lowert","loweru","lowerv","lowerw","lowerx","lowery","lowerz"};
+		
+		
 		String[] alphRep = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 		for(int k=26; k<32; k++){
-			String fileName = alph[k] + ".jpg";
+			String fileName = alph1[k] + ".jpg";
 			
 			System.out.println(fileName);
 			
