@@ -10,12 +10,26 @@ import java.util.*;
 
 import javax.imageio.ImageIO;
 
-public class imgtest {
+public class ImgProcessMatt {
 	static BufferedImage img = null;
-	
-	
 	// 20x20 array. neuralNetworkInput
 	static int[][] neuralNetworkInput = new int[20][20];
+	
+	
+	public static BufferedImage scaleImage(BufferedImage imgToScale){
+		BufferedImage scaledImg = null;
+		scaledImg = (BufferedImage) imgToScale.getScaledInstance(10, 10, img.SCALE_DEFAULT);
+		return scaledImg;
+	}
+	
+	public double widthHeightRatio(){
+		int avgLetterWidth = 25;
+		int width = img.getWidth();
+		
+		double ratio = width/avgLetterWidth;
+		
+		return ratio;
+	}
 	
 	// generates input for neuralnetworks. 
 	public static void generatedInput(int[][] array, ink writing){
@@ -33,11 +47,10 @@ public class imgtest {
 	
 	/*
 	 * Converts 2d neuralNetworkInput into 1d int array
-	 * @return - 400 pixels back
+	 * @return - Neural network representation of the passed image
 	 */
 	public static int[] convert(int[][] array){
 		int[] result = new int[array.length*array[0].length]; 
-		
 		
 		for(int i=0; i<array.length; i++){
 			int[] row = array[i];
@@ -45,23 +58,22 @@ public class imgtest {
 				result[i*row.length+j] = array[i][j];
 			}
 		}
-		
 		return result;
 	}
 	
 	/**
 	 * generates the cluster and opens up the image in a bufferedImage
 	 * @param fileName
-	 * @return - returns the cluster array; containing 400 pixels
+	 * @return - returns the cluster array;
 	 */
-	public static int[] generateCluster(String fileName){
-		
+	
+	public static void generateClusterTony(PatternDetector pd, String fileName){
 		try{//get image
 			File imgf = new File(fileName);
 			img = ImageIO.read(imgf);
 		}
 		catch (IOException e) {
-		  }
+		}
 		
 		int w = img.getWidth();
 		int h = img.getHeight();
@@ -69,20 +81,19 @@ public class imgtest {
 		
 		int[][] imgarray;
 		pixel[][] pixarray;
+		
 		//ArrayList<ink> essay = new ArrayList<ink>();
 		ink writing = new ink(w,h);
 		ink paper = new ink(w,h);
-		boolean match = false;
 		
 		imgarray= new int[w][h];
 		pixarray= new pixel[w][h];
 		
-		//convert to a 2d array
+		//write pixels to writing and paper objects
 		for(int i=0;i<w;i++){
 			for(int j=0;j<h;j++){
 				imgarray[i][j]=img.getRGB(i, j);
 				
-				match = false;
 				pixel p = new pixel(img.getRGB(i, j),i,j);
 				pixarray[i][j]=p;
 				if(!p.checkWhite()) writing.addPixel(p);
@@ -91,53 +102,57 @@ public class imgtest {
 			}
 		}
 		
+		pd.scan(pixarray, false);
 		
-		writing.findClusters(pixarray);
+	}
+	
+	public static int[] generateCluster(String fileName, BufferedImage bi){
 		
-		
-		System.out.println("number of cluster: " + writing.set.size());
-		// 
-		System.out.println("Generate the Input");
-		generatedInput(neuralNetworkInput, writing);
-		int[] result = convert(neuralNetworkInput);
-		
-		//convert from a 2d to 1d array 
-		int[] data = new int[h*w];
-		
-		for(int i=0;i<h;i++){
-			for(int j=0;j<w;j++){
-				data[(i*w)+j]=imgarray[j][i];
+		if (bi == null){
+			try{//get image
+				File imgf = new File(fileName);
+				img = ImageIO.read(imgf);
 			}
+			catch (IOException e) {
+			  }
+		} else{
+			img = bi;
 		}
 		
+		int w = img.getWidth();
+		int h = img.getHeight();
+		Color c;
 		
-		for(int i=0; i<data.length;i++){
-			c = new Color(data[i]);
-			//System.out.println(data[i] + " => " + c.getRed() + ", " + c.getGreen() + ", " + c.getBlue());
-			
-			if(c.getRed()>170 && c.getBlue()>100 && c.getGreen()>180){
-				data[i]=-1;
-			}else{
-				data[i]=-16777216;
-			}
-			
-		}
+		int[][] imgarray;
+		pixel[][] pixarray;
 		
-		img.setRGB(0, 0, w, h, data, 0, w);
+		//ArrayList<ink> essay = new ArrayList<ink>();
+		ink writing = new ink(w,h);
+		ink paper = new ink(w,h);
 		
+		imgarray= new int[w][h];
+		pixarray= new pixel[w][h];
 		
+		//write pixels to writing and paper objects
+		for(int i=0;i<w;i++){
+			for(int j=0;j<h;j++){
+				imgarray[i][j]=img.getRGB(i, j);
+				
+				pixel p = new pixel(img.getRGB(i, j),i,j);
+				pixarray[i][j]=p;
+				if(!p.checkWhite()) writing.addPixel(p);
+				else paper.addPixel(p);
 
-		Color a = Color.BLACK;
-		System.out.println(a.getRGB());
+			}
+		}
 		
+		//Stores the individual clusters of black ink in writing
+		writing.findClusters(pixarray);
+
+		//sets the neural network inputs to the passed image
+		generatedInput(neuralNetworkInput, writing);
 		
-		System.out.println(data.length);
-		
-//		JFrame frame = new JFrame();
-//	    JLabel label = new JLabel(new ImageIcon(img));
-//	    frame.getContentPane().add(label, BorderLayout.CENTER);
-//	    frame.pack();
-//	    frame.setVisible(true);
+		int[] result = convert(neuralNetworkInput);
 		
 		return result;
 	}
@@ -149,12 +164,12 @@ public class imgtest {
 	public static Map<String, int[]> generateAlphabetMap(boolean tenPixels){
 		Map<String, int[]> alphabetMap = new HashMap<String, int[]>();
 		
+		//Currently using these alphabets to train the NN
 		String[] alph1 = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","lowera","lowerb","lowerc","lowerd","lowere","lowerf","lowerg","lowerh","loweri","lowerj","lowerk","lowerl","lowerm","lowern","lowero","lowerp","lowerq","lowerr","lowers","lowert","loweru","lowerv","lowerw","lowerx","lowery","lowerz"};
-		
-		
 		String[] alphRep = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 		
-		for(int k=26; k<32; k++){
+		//adds each letter to the map with its matching character
+		for(int k=0; k<52; k++){
 			String fileName;
 			if (tenPixels){
 				fileName = "Pixel10letters/" + alph1[k] + ".jpg";
@@ -162,11 +177,8 @@ public class imgtest {
 			else {
 				fileName = alph1[k] + ".jpg";
 			}
-			
-			System.out.println(fileName);
-			
-			int[] result = generateCluster(fileName);
-			printArray(result);
+						
+			int[] result = generateCluster(fileName, null);
 			
 			alphabetMap.put(alphRep[k], result);
 	
@@ -175,35 +187,23 @@ public class imgtest {
 		return alphabetMap;
 	}
 	
-	/**
-	 * prints the hashMap
-	 * @param mp
-	 */
-	public static void printMap(Map mp) {
-	    Iterator it = mp.entrySet().iterator();
-	    while (it.hasNext()) {
-	        Map.Entry pair = (Map.Entry)it.next();
-	        System.out.println(pair.getKey() + " = " + pair.getValue());
-	        it.remove(); // avoids a ConcurrentModificationException
-	    }
-	}
-	
-	/**
-	 * Print the 1d array
-	 * @param array
-	 */
-	public static void printArray(int[] array){
-		for(int i=0; i<array.length; i++){
-			System.out.print(array[i]);
-		}
-		System.out.println();
-	}
-	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		Map<String, int[]> alphabetMap = generateAlphabetMap(false);
+	public static Map<String, int[]> generateAlphabetMapTony(boolean tenPixels, BufferedImage[] letters){
+		Map<String, int[]> alphabetMap = new HashMap<String, int[]>();
+		BufferedImage scaledLetter;
 		
-		printMap(alphabetMap);
+		//Currently using these alphabets to train the NN
+		String[] alphRep = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
+		
+		//adds each letter to the map with its matching character
+		for(int k=0; k<letters.length; k++){
+			scaledLetter = scaleImage(letters[k]);
+						
+			int[] result = generateCluster(null, scaledLetter);
+			
+			alphabetMap.put(alphRep[k], result);
+	
+		}
+		
+		return alphabetMap;
 	}
-
 }

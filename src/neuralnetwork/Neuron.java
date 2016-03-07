@@ -5,7 +5,7 @@ import java.util.Random;
 
 
 public class Neuron {
-    double value=0;
+    public double value=0;
     double error=0;
     double summation;
     
