@@ -3,7 +3,9 @@
 Code Conventions
 ================
 
-1. The main class will only contain top level code. This means that it should contain top level modules and the code necessary for interactions between them. Other main classes should only be used for testing purposes and should be clearly indicated for this purpose.
+1. The main class will only contain top level code. This means that it should contain top level modules and the code necessary 
+   for interactions between them. Other main classes should only be used for testing purposes and should be clearly indicated 
+   for this purpose.
 
 For example:
 
@@ -19,7 +21,8 @@ For example:
 		
 	}
 	
-2. Modules should be organized into packages of related classes. These packages should be named appropriately. The package structure should accurately reflect our design choices in terms of abstraction.
+2. Modules should be organized into packages of related classes. These packages should be named appropriately. The package 
+   structure should accurately reflect our design choices in terms of abstraction.
 
 For example:
 
@@ -56,7 +59,28 @@ For example:
 		ii. Each function should have a comment describing the function, it's parameters and what it returns.
 		iii. Functions should be outlined with comments in areas where confusion may arise.
 		iv. Variables should have following comments where the name may not describe the variable sufficiently.
-		v. Comments will utilize javadoc features to enable ease of use between programmers.
+		v. Comments will utilize javadoc features to facilitate ease of use between programmers.
 		
+	c. Structure
+		i. Variables should be declared at the top of the layer it exists in. For example, global variables will be
+		   located at the top of the class block, and local function variables will be at the top of the function block.
+		ii. Related expressions should be grouped into logical units seperated by spaces. These logical units can be
+		    commented at the programmers discresion.
+			e.g.
+				//Variable declarations.
+				int firstNumber, secondNumber, result;
+				
+				//Perform calculation.
+				result = firstNumber * secondNumber;
+				result += 100;
+				
+				System.out.println(result);
+		iii. Bracket indenting style does not matter, as long as it is consistent throughout the entire file.
+		iv. Do not use magic numbers. Use variables and constants instead.
+			e.g. circumference = diameter * PI;
+				...instead of...
+			     circumference = diameter * 3.1415;
+		
+If in doubt, refer to http://www.oracle.com/technetwork/java/codeconvtoc-136057.html
 		
 		

@@ -9,7 +9,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-import preprocess.ImgProcessMatt;
+import test.ImgProcessMatt;
+import test.PatternDetector;
 
 
 public class BackProp {
@@ -22,11 +23,11 @@ public class BackProp {
 	//PARAMETERS TO SET
 	static boolean productionMode = false; // Are we running a pre trained neural network?
 	static boolean tonyTrain = true; // Do we train using Tony's character Recognition?
-	static boolean letterSize = false; // FALSE = 20x20 size letters, TRUE = 10x10 size letters
-	static int epochs = 600; // Number of epochs while learning
-	static double learningRate = 0.1;
+	static boolean letterSize = true; // FALSE = 20x20 size letters, TRUE = 10x10 size letters
+	static int epochs = 400; // Number of epochs while learning
+	static double learningRate = 0.2;
 	static int alphabetSize = 56; // Size of the alphabet (Number of output nodes) (Do not change)
-	static int returnedValues = 4; // Number of results to return for each letter checked
+	static int returnedValues = 2; // Number of results to return for each letter checked
 	
 	// 3 layer structure of the neural network
 	static ArrayList<Neuron> inputLayer = new ArrayList<Neuron>();
@@ -457,11 +458,23 @@ public class BackProp {
     	}
     }
     
-    public static void testerTony(BufferedImage[] testingLetters){
+    public static void testerTony(ArrayList<BufferedImage> testingLetters){
     	String results = "";
+    	Neuron[] ns;
     	
-    	for (int k = 0; k < testingLetters.length; k++){
-    		 results = results + determineLetter(it.generateCluster(null, testingLetters[k]));
+    	for (int k = 0; k < testingLetters.size(); k++){
+    		 ns = determineLetter(it.generateCluster(null, testingLetters.get(k)));
+    		 
+    		 double best = 0;
+    		 Neuron bestn = null;
+    		 for (int i = 0; i<ns.length; i++){
+    			 if (ns[i].value > best){
+    				 best = ns[i].value;
+    				 bestn = ns[i];
+    			 }
+    		 }
+    		 
+    		 results = results + bestn.outputNodeRepresentation;
     	}
 	    		
     	System.out.println(results);
@@ -472,6 +485,7 @@ public class BackProp {
     //  MAIN FUNCTION 
     public static void main(String[] args) {
     	PatternDetector pd = new PatternDetector();
+    	PatternDetector pd2 = new PatternDetector();
     	
     	it.generateClusterTony(pd, "TrainingSetBeta.jpg");
     	
@@ -495,8 +509,8 @@ public class BackProp {
     	}
     	
     	if (tonyTrain){
-    		it.generateClusterTony(pd, "TestingSetBeta.jpg");
-    		testerTony(it.generateAlphabetMapTony(letterSize, pd.getLettersTest()));
+    		it.generateClusterTony(pd2, "TestingSetBeta.jpg");
+    		testerTony(pd2.getLetters());
     	}
     	else{
     		tester();

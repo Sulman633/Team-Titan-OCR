@@ -1,8 +1,11 @@
-package preprocess;
+package test;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -15,12 +18,14 @@ public class ImgProcessMatt {
 	// 20x20 array. neuralNetworkInput
 	static int[][] neuralNetworkInput = new int[20][20];
 	
-	
-	public static BufferedImage scaleImage(BufferedImage imgToScale){
-		BufferedImage scaledImg = null;
-		scaledImg = (BufferedImage) imgToScale.getScaledInstance(10, 10, img.SCALE_DEFAULT);
-		return scaledImg;
-	}
+	private static BufferedImage scaledImage(BufferedImage srcImg, int w, int h){
+	    BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TRANSLUCENT);
+	    Graphics2D g2 = resizedImg.createGraphics();
+	    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	    g2.drawImage(srcImg, 0, 0, w, h, null);
+	    g2.dispose();
+	    return resizedImg;
+	} 
 	
 	public double widthHeightRatio(){
 		int avgLetterWidth = 25;
@@ -103,8 +108,11 @@ public class ImgProcessMatt {
 		}
 		
 		pd.scan(pixarray, false);
+
 		
 	}
+	
+	
 	
 	public static int[] generateCluster(String fileName, BufferedImage bi){
 		
@@ -118,6 +126,8 @@ public class ImgProcessMatt {
 		} else{
 			img = bi;
 		}
+		
+		img = scaledImage(img, 10, 10);
 		
 		int w = img.getWidth();
 		int h = img.getHeight();
@@ -187,7 +197,7 @@ public class ImgProcessMatt {
 		return alphabetMap;
 	}
 	
-	public static Map<String, int[]> generateAlphabetMapTony(boolean tenPixels, BufferedImage[] letters){
+	public static Map<String, int[]> generateAlphabetMapTony(boolean tenPixels, ArrayList<BufferedImage> letters){
 		Map<String, int[]> alphabetMap = new HashMap<String, int[]>();
 		BufferedImage scaledLetter;
 		
@@ -195,8 +205,8 @@ public class ImgProcessMatt {
 		String[] alphRep = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 		
 		//adds each letter to the map with its matching character
-		for(int k=0; k<letters.length; k++){
-			scaledLetter = scaleImage(letters[k]);
+		for(int k=0; k<letters.size(); k++){
+			scaledLetter = scaledImage(letters.get(k), 20, 20);
 						
 			int[] result = generateCluster(null, scaledLetter);
 			
