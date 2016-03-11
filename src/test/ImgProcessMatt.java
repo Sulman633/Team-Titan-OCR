@@ -36,7 +36,7 @@ public class ImgProcessMatt {
 		return ratio;
 	}
 	
-	// generates input for neuralnetworks. 
+	// generates raw input for neuralnetworks. 
 	public static void generatedInput(int[][] array, ink writing){
 		
 		for(int i=0; i<array.length; i++){
@@ -50,7 +50,7 @@ public class ImgProcessMatt {
 		}	
 	}
 	
-	/*
+	/**
 	 * Converts 2d neuralNetworkInput into 1d int array
 	 * @return - Neural network representation of the passed image
 	 */
@@ -67,9 +67,10 @@ public class ImgProcessMatt {
 	}
 	
 	/**
-	 * generates the cluster and opens up the image in a bufferedImage
+	 * generates the cluster and opens up the image in a bufferedImage. This is used ONLY for Tony's
+	 * preprocessing components.
 	 * @param fileName
-	 * @return - returns the cluster array;
+	 * 
 	 */
 	
 	public static void generateClusterTony(PatternDetector pd, String fileName){
@@ -113,7 +114,14 @@ public class ImgProcessMatt {
 	}
 	
 	
-	
+	/**
+	 * Generates the input which will be input into the NN
+	 * Accepts EITHER a file name or a loaded Buffered Image
+	 * @param fileName - a filename to load an image from and generate on
+	 * @param bi - a buffered image to generate on
+	 * @param imgSize - the size the image must be resized to
+	 * @return
+	 */
 	public static int[] generateCluster(String fileName, BufferedImage bi, int imgSize){
 		
 		if (bi == null){
@@ -168,6 +176,8 @@ public class ImgProcessMatt {
 	
 	/**
 	 * AlphabetMap of all the cases and add it the hashMap
+	 * This generates a map from a single alphabet of computer text. It is meant for testing only, not
+	 * for final training
 	 * @return
 	 */
 	public static Map<String, int[]> generateAlphabetMap(int imgSize){
@@ -196,6 +206,12 @@ public class ImgProcessMatt {
 		return alphabetMap;
 	}
 	
+	/**
+	 * The main alphabet generation. Generates a training alphabet from a scanned page, which is in alphabetical order.
+	 * @param letters - a list of buffered images recieved from tony's preprocessing 
+	 * @param imgSize - the size (in pixels) that letters will be scaled to
+	 * @return
+	 */
 	public static Map<String, int[]> generateAlphabetMapTony(ArrayList<BufferedImage> letters, int imgSize){
 		Map<String, int[]> alphabetMap = new HashMap<String, int[]>();
 		BufferedImage scaledLetter;
