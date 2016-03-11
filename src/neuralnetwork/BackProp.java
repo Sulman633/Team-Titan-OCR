@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Time;
 import java.util.*;
 
 import test.ImgProcessMatt;
@@ -22,10 +23,10 @@ public class BackProp {
 	
 	//PARAMETERS TO SET
 	static boolean productionMode = false; // Are we running a pre trained neural network?
-	static boolean tonyTrain = false; // Do we train using Tony's character Recognition?
-	static int imgSize = 10;
+	static boolean tonyTrain = true; // Do we train using Tony's character Recognition?
+	static int imgSize = 5;
 	static int epochs = 400; // Number of epochs while learning
-	static double learningRate = 0.2;
+	static double learningRate = 0.20;
 	static int alphabetSize = 56; // Size of the alphabet (Number of output nodes) (Do not change)
 	static int returnedValues = 2; // Number of results to return for each letter checked
 	
@@ -162,7 +163,7 @@ public class BackProp {
      */
     public static void setInputNodes(int[] inputValues){
     	for (int node = 0; node < inputLayer.size(); node++){
-    		inputLayer.get(node).value = inputValues[node];
+    		inputLayer.get(node).value = (double) inputValues[node];
     	}
     }
     
@@ -361,6 +362,10 @@ public class BackProp {
     	int[] currentInput;
     	String passedLetter;
     	
+    	long startTime = System.currentTimeMillis();
+    	long currTime;
+    	int endTime;
+    	
     	for (int count = 0; count < epochs; count++){
         
 	    	// iterate through the map
@@ -387,7 +392,12 @@ public class BackProp {
 	        	}
 	        }
 	        if (count%10 == 0){
+	        	if (count > 0){
 	        		System.out.println("Training... : " + count + "/" + epochs);
+	        		currTime = System.currentTimeMillis();
+	        		endTime = (int) ((currTime-startTime)/count)*(epochs-count);
+	        		System.out.println("Estimated time to completion: " + (endTime/1000)/60 + " minutes and " + (endTime/1000)%60 + " seconds..");
+	        	}
 	        }
 	    	
         }
@@ -463,7 +473,7 @@ public class BackProp {
     	Neuron[] ns;
     	
     	for (int k = 0; k < testingLetters.size(); k++){
-    		 ns = determineLetter(it.generateCluster(null, testingLetters.get(k), 0));
+    		 ns = determineLetter(it.generateCluster(null, testingLetters.get(k), imgSize));
     		 
     		 double best = 0;
     		 Neuron bestn = null;
@@ -475,9 +485,9 @@ public class BackProp {
     		 }
     		 
     		 results = results + bestn.outputNodeRepresentation;
+    		 System.out.println(results);
+    		 
     	}
-	    		
-    	System.out.println(results);
     	System.out.println("Complete.");
 	    
     }
