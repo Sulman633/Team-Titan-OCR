@@ -23,7 +23,7 @@ public class BackProp {
 	//PARAMETERS TO SET
 	static boolean productionMode = false; // Are we running a pre trained neural network?
 	static boolean tonyTrain = false; // Do we train using Tony's character Recognition?
-	static boolean letterSize = false; // FALSE = 20x20 size letters, TRUE = 10x10 size letters
+	static int imgSize = 10;
 	static int epochs = 400; // Number of epochs while learning
 	static double learningRate = 0.2;
 	static int alphabetSize = 56; // Size of the alphabet (Number of output nodes) (Do not change)
@@ -424,25 +424,25 @@ public class BackProp {
     	
     	while (in == 1 || in == 2 || in == 5 || in == 6 || in == 7){
 	    	if (in == 1){
-	    		bestLetters = determineLetter(it.generateCluster("testCaseA.jpg", null));
+	    		bestLetters = determineLetter(it.generateCluster("testCaseA.jpg", null, imgSize));
 	    		for (int nnOutputNode = 0; nnOutputNode < alphabetSize; nnOutputNode++){
         			System.out.println("Current output node: " + nnOutputNode + "\tOutput: " + outputLayer.get(nnOutputNode).value + "\t Error: "+ outputLayer.get(nnOutputNode).error );
         		}
 	    	}
 	    	else if (in == 2){
-	    		bestLetters = determineLetter(it.generateCluster("testCaseB.jpg", null));
+	    		bestLetters = determineLetter(it.generateCluster("testCaseB.jpg", null, imgSize));
 	    		for (int nnOutputNode = 0; nnOutputNode < alphabetSize; nnOutputNode++){
         			System.out.println("Current output node: " + nnOutputNode + "\tOutput: " + outputLayer.get(nnOutputNode).value + "\t Error: "+ outputLayer.get(nnOutputNode).error );
         		}
 	    	}
 	    	else if (in == 5){
-	    		int[] aNNRepresentation = it.generateCluster("testCaseA.jpg", null);
+	    		int[] aNNRepresentation = it.generateCluster("testCaseA.jpg", null, imgSize);
 	    		for (int i = 0; i < 100; i++){
 	    			singleTrain("a", aNNRepresentation);
 	    		}
 	    	}
 	    	else if (in == 6){
-	    		int[] aNNRepresentation = it.generateCluster("testCaseB.jpg", null);
+	    		int[] aNNRepresentation = it.generateCluster("testCaseB.jpg", null, imgSize);
 	    		for (int i = 0; i < 100; i++){
 	    			singleTrain("b", aNNRepresentation);
 	    		}
@@ -463,7 +463,7 @@ public class BackProp {
     	Neuron[] ns;
     	
     	for (int k = 0; k < testingLetters.size(); k++){
-    		 ns = determineLetter(it.generateCluster(null, testingLetters.get(k)));
+    		 ns = determineLetter(it.generateCluster(null, testingLetters.get(k), 0));
     		 
     		 double best = 0;
     		 Neuron bestn = null;
@@ -500,9 +500,9 @@ public class BackProp {
     		
     		if (tonyTrain){
     			it.generateClusterTony(pd, "TrainingSetBeta.jpg");
-    			trainingAlphabet = it.generateAlphabetMapTony(letterSize, pd.getLetters());
+    			trainingAlphabet = it.generateAlphabetMapTony(pd.getLetters(), imgSize);
     		} else{
-    			trainingAlphabet = it.generateAlphabetMap(letterSize);
+    			trainingAlphabet = it.generateAlphabetMap(imgSize);
     		}
     		
     		trainMethod(trainingAlphabet); //begin training of the network

@@ -114,20 +114,19 @@ public class ImgProcessMatt {
 	
 	
 	
-	public static int[] generateCluster(String fileName, BufferedImage bi){
+	public static int[] generateCluster(String fileName, BufferedImage bi, int imgSize){
 		
 		if (bi == null){
 			try{//get image
 				File imgf = new File(fileName);
 				img = ImageIO.read(imgf);
+				img = scaledImage(img, imgSize, imgSize);
 			}
 			catch (IOException e) {
 			  }
 		} else{
 			img = bi;
 		}
-		
-		img = scaledImage(img, 10, 10);
 		
 		int w = img.getWidth();
 		int h = img.getHeight();
@@ -171,7 +170,7 @@ public class ImgProcessMatt {
 	 * AlphabetMap of all the cases and add it the hashMap
 	 * @return
 	 */
-	public static Map<String, int[]> generateAlphabetMap(boolean tenPixels){
+	public static Map<String, int[]> generateAlphabetMap(int imgSize){
 		Map<String, int[]> alphabetMap = new HashMap<String, int[]>();
 		
 		//Currently using these alphabets to train the NN
@@ -181,14 +180,14 @@ public class ImgProcessMatt {
 		//adds each letter to the map with its matching character
 		for(int k=0; k<52; k++){
 			String fileName;
-			if (tenPixels){
+			if (imgSize == 10){
 				fileName = "Pixel10letters/" + alph1[k] + ".jpg";
 			}
 			else {
 				fileName = alph1[k] + ".jpg";
 			}
 						
-			int[] result = generateCluster(fileName, null);
+			int[] result = generateCluster(fileName, null, imgSize);
 			
 			alphabetMap.put(alphRep[k], result);
 	
@@ -197,7 +196,7 @@ public class ImgProcessMatt {
 		return alphabetMap;
 	}
 	
-	public static Map<String, int[]> generateAlphabetMapTony(boolean tenPixels, ArrayList<BufferedImage> letters){
+	public static Map<String, int[]> generateAlphabetMapTony(ArrayList<BufferedImage> letters, int imgSize){
 		Map<String, int[]> alphabetMap = new HashMap<String, int[]>();
 		BufferedImage scaledLetter;
 		
@@ -206,9 +205,10 @@ public class ImgProcessMatt {
 		
 		//adds each letter to the map with its matching character
 		for(int k=0; k<letters.size(); k++){
-			scaledLetter = scaledImage(letters.get(k), 20, 20);
+			
+			scaledLetter = scaledImage(letters.get(k), imgSize, imgSize);
 						
-			int[] result = generateCluster(null, scaledLetter);
+			int[] result = generateCluster(null, scaledLetter, 0);
 			
 			alphabetMap.put(alphRep[k], result);
 	
