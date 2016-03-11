@@ -43,6 +43,7 @@ public class Gui extends JFrame {
 	private JPanel beforePanel; //The display panel on the left for displaying 
 	private JTextArea txtAreaAfter; //The text area that it will be written to on the right
 	private PDDocument document;
+	private static String inputError = "Please choose a Image or PDF before clicking this button!";
 	
 	public Gui(){
 		//Creates the JFrame
@@ -127,14 +128,19 @@ public class Gui extends JFrame {
 					beforePanel.add(picLabel);
 					beforePanel.repaint();
 				} catch (IOException e1) {
-					txtErrorArea.setText("Error! Wrong Image format");
+					txtErrorArea.setText("Error! Image format not supported");
 				}
 	        }
 	    }
 	}
 	//Generates the document after converting it 
 	private void generate(){
-		
+		//Must first have a image loaded to use this option
+		if(bufferedImage != null){
+			
+		}else {
+			txtErrorArea.setText(inputError);
+		}
 	}
 	
 	/**
@@ -142,33 +148,38 @@ public class Gui extends JFrame {
 	 * @param text - the text that is written to the file. 
 	 */
 	private void save(String text){
-		File file = new File("C:\\Users\\Sulman\\Documents\\EclipseProjects\\Team-Titan-OCR\\output.txt");
-		if(!text.equals(" ")){
-			BufferedWriter writer = null;
-			try{
-			    writer = new BufferedWriter( new FileWriter(file));
-			    writer.write(text);
-
+		//Must first have a image loaded to use this option
+		if(bufferedImage !=null){
+			File file = new File("C:\\Users\\Sulman\\Documents\\EclipseProjects\\Team-Titan-OCR\\output.txt");
+			if(!text.equals(" ")){
+				BufferedWriter writer = null;
+				try{
+				    writer = new BufferedWriter( new FileWriter(file));
+				    writer.write(text);
+	
+				}
+				catch (IOException e){
+				
+				}
+				finally{
+				    try{
+				        if ( writer != null)
+				        writer.close();
+				    }
+				    catch (IOException e){
+				    
+				    }
+				}
 			}
-			catch (IOException e){
-			
+			else{
+				txtErrorArea.setText("No file selected which can be saved!");
 			}
-			finally{
-			    try{
-			        if ( writer != null)
-			        writer.close();
-			    }
-			    catch (IOException e){
-			    
-			    }
-			}
-		}
-		else{
-			txtErrorArea.setText("No file selected which can be saved!");
+		}else{
+			txtErrorArea.setText(inputError);
 		}
 	}
 	
-	public void displayImage(Image img){
+	public void displayImage(BufferedImage img){
 		
 	}
 	
@@ -177,7 +188,7 @@ public class Gui extends JFrame {
 	}
 	/*
 	 * Creates the GUI with appropriate buttons and their 
-	 * corresponding action listeners 
+	 * corresponding action listeners. 
 	 */
 	private void initializeGui() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -189,21 +200,26 @@ public class Gui extends JFrame {
 		beforePanel = new JPanel();
 		beforePanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		beforePanel.setBackground(Color.WHITE);
-		
+		/*
+		 * The initialization of the buttons and there corresponding 
+		 * action listeners.
+		 */
 		JButton btnOpen = new JButton("Open");
-		//The action listener for Open button 
+		
 		btnOpen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				open(); //Starts the open process
 			}
 		});
+		
 		btnOpen.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		//The action listener for Generate Button
+		
 		JButton btnGenerate = new JButton("Generate");
 		btnGenerate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
+		
 		btnGenerate.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		
 		JButton btnSave = new JButton("Save");
@@ -214,12 +230,14 @@ public class Gui extends JFrame {
 		});
 		btnSave.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		
+		//Both of the labels above the JPanels on GUI
 		JLabel lblBefore = new JLabel("Before");
 		lblBefore.setFont(new Font("Tahoma", Font.BOLD, 12));
 		
 		JLabel lblAfter = new JLabel("After");
 		lblAfter.setFont(new Font("Tahoma", Font.BOLD, 12));
 		
+		//The text area for errors for user on GUI
 		txtErrorArea = new JTextField();
 		txtErrorArea.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		txtErrorArea.setColumns(10);
@@ -230,6 +248,7 @@ public class Gui extends JFrame {
 		txtAreaAfter.setBackground(Color.WHITE);
 		JScrollPane scrollPane = new JScrollPane(txtAreaAfter);
 		
+		//Creates the positioning of each component in a GroupLayout
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -237,23 +256,24 @@ public class Gui extends JFrame {
 					.addContainerGap()
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
-							.addComponent(beforePanel, GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+							.addComponent(beforePanel, GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 338, GroupLayout.PREFERRED_SIZE)
-							.addGap(1))
+							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 520, GroupLayout.PREFERRED_SIZE)
+							.addGap(10))
 						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGap(180)
 							.addComponent(btnOpen, GroupLayout.PREFERRED_SIZE, 194, GroupLayout.PREFERRED_SIZE)
-							.addGap(51)
+							.addGap(50)
 							.addComponent(btnGenerate, GroupLayout.PREFERRED_SIZE, 184, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+							.addGap(50)
 							.addComponent(btnSave, GroupLayout.PREFERRED_SIZE, 194, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGap(139)
+					.addGap(250)
 					.addComponent(lblBefore)
 					.addPreferredGap(ComponentPlacement.RELATED, 322, Short.MAX_VALUE)
 					.addComponent(lblAfter)
-					.addGap(169))
+					.addGap(260))
 				.addGroup(gl_contentPane.createSequentialGroup()
 					.addContainerGap()
 					.addComponent(txtErrorArea, GroupLayout.DEFAULT_SIZE, 670, Short.MAX_VALUE)
@@ -267,8 +287,8 @@ public class Gui extends JFrame {
 						.addComponent(lblAfter))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
-						.addComponent(beforePanel, GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE))
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE)
+						.addComponent(beforePanel, GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(txtErrorArea, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
