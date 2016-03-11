@@ -3,7 +3,9 @@
 Code Conventions
 ================
 
-1. The main class will only contain top level code. This means that it should contain top level modules and the code necessary for interactions between them. Other main classes should only be used for testing purposes and should be clearly indicated for this purpose.
+1. The main class will only contain top level code. This means that it should contain top level modules and the code necessary 
+   for interactions between them. Other main classes should only be used for testing purposes and should be clearly indicated 
+   for this purpose.
 
 For example:
 
@@ -19,7 +21,8 @@ For example:
 		
 	}
 	
-2. Modules should be organized into packages of related classes. These packages should be named appropriately. The package structure should accurately reflect our design choices in terms of abstraction.
+2. Modules should be organized into packages of related classes. These packages should be named appropriately. The package 
+   structure should accurately reflect our design choices in terms of abstraction.
 
 For example:
 
@@ -73,7 +76,13 @@ For example:
 				
 				System.out.println(result);
 		iii. Bracket indenting style does not matter, as long as it is consistent throughout the entire file.
+		iv. Do not use magic numbers. Use variables and constants instead.
+			e.g. circumference = diameter * PI;
+				...instead of...
+			     circumference = diameter * 3.1415;
 		
 If in doubt, refer to http://www.oracle.com/technetwork/java/codeconvtoc-136057.html
+
+DataBase URL: http://www.phpmyadmin.co/index.php?token=3dc2ad8b8359b8f46177ec3d08505f8c (Refer to Nathan before making any changes to tables)
 		
 		
