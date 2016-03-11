@@ -22,8 +22,8 @@ public class BackProp {
 	
 	//PARAMETERS TO SET
 	static boolean productionMode = false; // Are we running a pre trained neural network?
-	static boolean tonyTrain = true; // Do we train using Tony's character Recognition?
-	static boolean letterSize = true; // FALSE = 20x20 size letters, TRUE = 10x10 size letters
+	static boolean tonyTrain = false; // Do we train using Tony's character Recognition?
+	static boolean letterSize = false; // FALSE = 20x20 size letters, TRUE = 10x10 size letters
 	static int epochs = 400; // Number of epochs while learning
 	static double learningRate = 0.2;
 	static int alphabetSize = 56; // Size of the alphabet (Number of output nodes) (Do not change)
@@ -242,7 +242,7 @@ public class BackProp {
     	System.out.println("Size of Alphabet is: " + alphabetSize);
         int outputLayerSize = alphabetSize; // Number of Output Nodes
         System.out.println("Number of training epochs?");
-        int epochs = sc.nextInt(); // Number of Hidden Nodes
+        epochs = sc.nextInt(); // Number of Hidden Nodes
         
 
         // initializes the 3 layers of neurons with random weights
@@ -487,10 +487,9 @@ public class BackProp {
     	PatternDetector pd = new PatternDetector();
     	PatternDetector pd2 = new PatternDetector();
     	
-    	it.generateClusterTony(pd, "TrainingSetBeta.jpg");
-    	
     	Map<String, int[]> trainingAlphabet = new HashMap<String, int[]>();
     	
+    	//training
     	if (productionMode){
         	System.out.println("ENSURE the following settings are the same!!");
     		initialization(); //initialize a plain NN
@@ -500,6 +499,7 @@ public class BackProp {
     		initialization(); //initialize a plain NN
     		
     		if (tonyTrain){
+    			it.generateClusterTony(pd, "TrainingSetBeta.jpg");
     			trainingAlphabet = it.generateAlphabetMapTony(letterSize, pd.getLetters());
     		} else{
     			trainingAlphabet = it.generateAlphabetMap(letterSize);
@@ -508,6 +508,7 @@ public class BackProp {
     		trainMethod(trainingAlphabet); //begin training of the network
     	}
     	
+    	//testing
     	if (tonyTrain){
     		it.generateClusterTony(pd2, "TestingSetBeta.jpg");
     		testerTony(pd2.getLetters());
