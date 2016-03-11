@@ -9,7 +9,7 @@ public class Neuron {
     double error=0;
     double summation;
     
-    String outputNodeRepresentation; // The letter the neuron represents (in the case of being an output node)
+    public String outputNodeRepresentation; // The letter the neuron represents (in the case of being an output node)
     
     Random rand = new Random();
     ArrayList<Double> weight = new ArrayList<>();
