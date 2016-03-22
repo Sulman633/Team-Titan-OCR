@@ -1,8 +1,8 @@
 package decisionmakingagent;
 
 import java.util.ArrayList;
-import java.util.Random;
-
+import lexicon.Lexicon;
+import lexicon.PossibleWord;
 import neuralnetwork.Neuron;
 /**
  * To understand this class it is vital to understand the use of the two wrapper classes it works closely with, 
@@ -22,10 +22,13 @@ import neuralnetwork.Neuron;
  * <img src="./doc/genCombos.png"
  * style="width: 75%" />
  * 
- * <p>Each word in the ArrayList is then scored 
+ * <p>Each word in the ArrayList is then scored based on two criteria: the frequency of use and the cumulative probability 
+ * of all of its letters.
  * 
  * 
  * @author Nathan Van Dyken
+ * @author Sulman Qureshi
+ * 
  *
  */
 public class Agent {
@@ -40,6 +43,7 @@ public class Agent {
 	
 	PotentialChar [] currentWord;
 	ArrayList<PotentialWord> wordList;
+	Lexicon lex = new Lexicon();
 	
 	public String assess( PotentialChar [] newWord ){
 		
@@ -57,7 +61,7 @@ public class Agent {
 		//The scoreByLexicon method will generate additional entries to the wordList, so
 		//it must be executed before scoreByProbability.
 		scoreByLexicon();
-		scoreByProbability();
+		wordList = scoreByProbability( wordList );
 		
 		return makeFinalDecision();
 		
@@ -93,27 +97,113 @@ public class Agent {
 		return result;
 		
 	}
-	
+	/**
+	 * Scores each potential word with a score based on its frequency of use as stored in the Lexicon database.
+	 * Generates new words if one or more of the letters in the word have a probability that is below the constant
+	 *  UNKNOWN_LETTER_CUTOFF.
+	 */
 	void scoreByLexicon( ){
+		
+		//Iterates through every word in the current list of candidate words, scoring it based on the Lexicon.
+		for( int h = 0; h < wordList.size(); h++ ){
+			
+			String [] thisString = {wordList.get(h).getString()};
+			
+			PossibleWord [] thisFullWord = lex.getMatches( thisString );
+			
+			//Sets score to zero if there is no match from the DB, otherwise sets it to the frequency stored in the DB.
+			if(thisFullWord == null || thisFullWord.length == 0 ) wordList.get(h).lexiconScore = 0;
+			else wordList.get(h).lexiconScore = thisFullWord[0].FREQ;
+			
+		}
+		
+		//From this point onward, we create new words and score them as they are made.
+		ArrayList<PotentialWord> newWords = new ArrayList<PotentialWord>();
 		
 		for( int i = 0; i < wordList.size(); i++ ){
 			
-			//TODO Query DB, removing letters that fall below UNKNOWN_LETTER_CUTOFF
-			//TODO Add new words to the wordList
+			Neuron [] preSearchWord = new Neuron[wordList.get(i).CHARS.length];
+			
+			for( int j = 0; j < wordList.get(i).CHARS.length; j++ ){
+				
+				if( wordList.get(i).CHARS[j].value > UNKNOWN_LETTER_CUTOFF ) preSearchWord[j] = wordList.get(i).CHARS[j];
+				
+			}
+			
+			String [] result = {""};
+			
+			for( int k = 0; k < wordList.get(i).CHARS.length; k++ ){
+				
+				if( preSearchWord[i] != null  ) result[0] += preSearchWord[i].outputNodeRepresentation;
+				else result[0] += "_";
+				
+			}
+			
+			
+			PossibleWord [] resultantWords = lex.getMatches( result );
+			
+			//l is the number of the word in the resultantWords array that we are currently dealing with.
+			for( int l = 0; l < resultantWords.length; l++ ){
+				
+				Neuron [] postSearchWord = new Neuron[resultantWords[l].WORD.length()];
+				
+				//m is the character that is being copied over into the resultant word.
+				for( int m = 0; m < resultantWords[l].WORD.length(); m++ ){
+					
+					//Check to see if we're dealing with a blank character that has been filled in, meaning we have a new word.
+					if( preSearchWord[m].outputNodeRepresentation.charAt(0) != (resultantWords[l].WORD.charAt(m) )){
+						
+						postSearchWord[m] = new Neuron();
+						postSearchWord[m].outputNodeRepresentation = "" + resultantWords[l].WORD.charAt(m);
+						postSearchWord[m].value = 0.0;
+						
+					}else postSearchWord[m] = preSearchWord[m];
+					
+				}
+				
+				PotentialWord nextNewWord = new PotentialWord(postSearchWord);
+				nextNewWord.lexiconScore = resultantWords[l].FREQ;
+				
+				boolean isDuplicate = false;
+				
+				//Tests if this word is a duplicate.
+				for( int n = 0; n < newWords.size(); n++ ){
+					
+					if( nextNewWord.equals( wordList.get(n) ) ) isDuplicate = true;
+					
+				}
+				
+				if( !isDuplicate ) wordList.add( nextNewWord );
+				
+			}
 			
 		}
 		
 	}
 	
-	void scoreByProbability(){
-		
-		//TODO Score words based on the probability of their letters
-		
+	/**
+	 * This method takes a type potentialWord arrayList which contains all possible word combinations.
+	 * Then for each word possibility it calculates a averageScore that will represent the words likeliness. 
+	 * @param combos - the ArrayList which holds all combinations of words.
+	 * @return - returns combo arrayList with updated averageScore for each word in the array.
+	 */
+	ArrayList<PotentialWord> scoreByProbability(ArrayList<PotentialWord> combos){
+		double avgProbability =0;
+		for(int i =0;i<combos.size();i++){
+			for(int j=0;j<combos.get(i).CHARS.length;j++){
+				avgProbability += combos.get(i).CHARS[j].value;
+			}
+			avgProbability/=combos.get(i).CHARS.length;
+			combos.get(i).setProbabilitiyScore(avgProbability);
+			avgProbability =0;
+			System.out.println(combos.get(i).getProbabilityScore());
+		}
+		return combos;
 	}
 	
 	public String makeFinalDecision(){
 		
-		//TODO Return the best string based on both scores
+		//TODO Return the best string based on both scores.
 		
 		return "";
 		
