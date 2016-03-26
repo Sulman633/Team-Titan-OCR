@@ -1,18 +1,11 @@
 package neuralnetwork;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.Time;
+import java.io.*;
 import java.util.*;
 
 import test.ImgProcessMatt;
 import test.PatternDetector;
-
 
 public class BackProp {
 
@@ -355,7 +348,8 @@ public class BackProp {
      * accepts a map of 56 keys (letters) and their matching NN inputs
      * @param trainingAlphabet
      */
-    public static void trainMethod(Map trainingAlphabet){
+    @SuppressWarnings("rawtypes")
+	public static void trainMethod(Map trainingAlphabet){
         // // // ACTUAL TRAINING HAPPENS FROM HERE DOWN
     	int[] expected = new int[outputLayer.size()];
     	int[] currentInput;
@@ -429,7 +423,8 @@ public class BackProp {
     	System.out.println("type '5' or '6' to train on images 1 or 2 (a or b)");
     	System.out.println("type '7' to save the NN");
     	int in = sc.nextInt(); // Number of Input Nodes
-    	Neuron[] bestLetters;
+    	@SuppressWarnings("unused")
+		Neuron[] bestLetters;
     	
     	while (in == 1 || in == 2 || in == 5 || in == 6 || in == 7){
 	    	if (in == 1){
@@ -467,7 +462,8 @@ public class BackProp {
     	}
     }
     
-    public static void testerTony(ArrayList<BufferedImage> testingLetters){
+    @SuppressWarnings("static-access")
+	public static void testerTony(ArrayList<BufferedImage> testingLetters){
     	String results = "";
     	Neuron[] ns;
     	
@@ -492,7 +488,8 @@ public class BackProp {
     }
     
     //  MAIN FUNCTION 
-    public static void main(String[] args) {
+    @SuppressWarnings("static-access")
+	public static void main(String[] args) {
     	PatternDetector pd = new PatternDetector();
     	PatternDetector pd2 = new PatternDetector();
     	

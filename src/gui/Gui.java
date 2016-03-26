@@ -1,40 +1,22 @@
 package gui;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
+import javax.swing.border.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.*;
 
+@SuppressWarnings("serial")
 public class Gui extends JFrame {
 	private JPanel contentPane; //The content pane on the JFrame
 	private JTextField txtErrorArea; //This is used to display errors
@@ -134,6 +116,7 @@ public class Gui extends JFrame {
 	    }
 	}
 	//Generates the document after converting it 
+	@SuppressWarnings("unused")
 	private void generate(){
 		//Must first have a image loaded to use this option
 		if(bufferedImage != null){
@@ -147,6 +130,7 @@ public class Gui extends JFrame {
 	 * Using a buffered and file writer the program writes to a file when the save button is clicked.
 	 * @param text - the text that is written to the file. 
 	 */
+	@SuppressWarnings("unused")
 	private void save(String text){
 		//Must first have a image loaded to use this option
 		if(bufferedImage !=null){
