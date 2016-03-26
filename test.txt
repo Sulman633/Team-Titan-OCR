@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 sadfasdf
 asdfasdfsadf
+=======
+sadfasdf
+asdfasdfsadf
+>>>>>>> 32989bad4a2f71e460f79be1ac327b9c5362230d

@@ -24,7 +24,8 @@ public class Cluster {
 	
 	public Cluster(){
 		set = new ArrayList<Pixel>();
-		distance = new ArrayList<Double>();	
+		distance = new ArrayList<Double>();
+		
 	}
 	
 	public Cluster(double x, double y){
@@ -174,3 +175,4 @@ public class Cluster {
 	}
 
 }
+
