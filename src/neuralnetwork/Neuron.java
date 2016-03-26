@@ -5,11 +5,13 @@ import java.util.Random;
 
 
 public class Neuron {
-    public Double value = 0.0;
+
+    public double value=0;
     double error=0;
     double summation;
     
-    String outputNodeRepresentation; // The letter the neuron represents (in the case of being an output node)
+    public String outputNodeRepresentation; // The letter the neuron represents (in the case of being an output node)
+
     
     Random rand = new Random();
     ArrayList<Double> weight = new ArrayList<>();
@@ -37,5 +39,5 @@ public class Neuron {
     	
     }
     
-    
 }
+
