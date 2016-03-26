@@ -14,6 +14,7 @@ public class AgentTestingHarness {
 		
 		testGenerationOfWords();
 		
+		
 	}
 	/**
 	 * Tests the agent's ability to generate words from nodes in a situation identical to what it would see once integrated. 
@@ -34,7 +35,7 @@ public class AgentTestingHarness {
 		n0[2] = new Neuron();
 		n0[2].outputNodeRepresentation = "l";
 		n0[2].value = .75;
-		testWord[0] = new PotentialChar(n0);
+		testWord[0] = new PotentialChar(n0); 
 		
 		Neuron [] n1 = new Neuron[3];
 		n1[0] = new Neuron();
@@ -78,10 +79,9 @@ public class AgentTestingHarness {
 		
 		ArrayList<PotentialWord> combos=  a.genCombos(testWord);
 		
-		for( int i = 0; i < combos.size(); i++){
-			
-			printWord(combos.get(i));
-			
+		a.scoreByProbability(combos);
+		for(int i=0;i<combos.size();i++){
+			System.out.println(combos.get(i));
 		}
 		
 	}
@@ -101,6 +101,7 @@ public class AgentTestingHarness {
 		System.out.println();
 		
 	}
+	
 	
 	public static void main( String args[]){ new AgentTestingHarness(); }
 	

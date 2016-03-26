@@ -113,6 +113,7 @@ public class Agent {
 			
 			//Sets score to zero if there is no match from the DB, otherwise sets it to the frequency stored in the DB.
 			if(thisFullWord == null || thisFullWord.length == 0 ) wordList.get(h).lexiconScore = 0;
+			
 			else wordList.get(h).lexiconScore = thisFullWord[0].FREQ;
 			
 		}
@@ -185,7 +186,7 @@ public class Agent {
 	 * This method takes a type potentialWord arrayList which contains all possible word combinations.
 	 * Then for each word possibility it calculates a averageScore that will represent the words likeliness. 
 	 * @param combos - the ArrayList which holds all combinations of words.
-	 * @return - returns combo arrayList with updated averageScore for each word in the array.
+	 * @return - returns combos arrayList with updated averageScore for each word in the array.
 	 */
 	ArrayList<PotentialWord> scoreByProbability(ArrayList<PotentialWord> combos){
 		double avgProbability =0;
@@ -196,7 +197,7 @@ public class Agent {
 			avgProbability/=combos.get(i).CHARS.length;
 			combos.get(i).setProbabilitiyScore(avgProbability);
 			avgProbability =0;
-			System.out.println(combos.get(i).getProbabilityScore());
+			//System.out.println(combos.get(i).getProbabilityScore());
 		}
 		return combos;
 	}
