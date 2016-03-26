@@ -1,3 +1,4 @@
+package ppDan;
 import java.awt.Color;
 
 public class Pixel {

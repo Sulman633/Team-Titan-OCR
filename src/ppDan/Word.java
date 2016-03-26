@@ -1,3 +1,4 @@
+package ppDan;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -47,7 +48,7 @@ public class Word {
 		
 		//i have all datapoints for a word
 		//find weights
-		int k=5; //4 letters in the word
+		int k=1; //4 letters in the word
 		double fuzz = 1.3; //fuzzy parameter
 		ArrayList<Cluster> letters;
 		double width;

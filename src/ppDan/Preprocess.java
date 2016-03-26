@@ -1,3 +1,4 @@
+package ppDan;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Image;
@@ -15,13 +16,13 @@ import javax.swing.WindowConstants;
 
 public class Preprocess {
 
-	public static void main(String[] args) {
+	public static Ink getInk() {
 		// TODO Auto-generated method stub
 		
 		BufferedImage img = null;
 		
 		try{//get image
-			File imgf = new File("test10.jpg");
+			File imgf = new File("TrainingSetBeta.jpg");
 			img = ImageIO.read(imgf);
 		}
 		catch (IOException e) {
@@ -50,9 +51,9 @@ public class Preprocess {
 		writing.findClusters(pixArray); //transforms the collection of pixels to a collection of clusters
 		writing.findLines(pixArray); //transforms the collection of clusters to a collection of lines
 
-		writing.lines.get(1).words.get(6).findLetters();
-		Display(writing.lines.get(1).words.get(6));
-		
+		//writing.lines.get(1).words.get(6).findLetters();
+		//Display(writing.lines.get(1).words.get(6));
+		return writing;
 
 
 	}

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.sql.Time;
 import java.util.*;
 
+import ppDan.Preprocess;
 import test.ImgProcessMatt;
 import test.PatternDetector;
 
@@ -22,8 +23,9 @@ public class BackProp {
 	static String fileName = "NNSave.txt"; // Name of save file for NN
 	
 	//PARAMETERS TO SET
-	static boolean productionMode = true; // Are we running a pre trained neural network?
+	static boolean productionMode = false; // Are we running a pre trained neural network?
 	static boolean tonyTrain = false; // Do we train using Tony's character Recognition?
+	static boolean danTrain = true;
 	static int imgSize = 20;
 	static int epochs = 400; // Number of epochs while learning
 	static double learningRate = 0.20;
@@ -510,7 +512,11 @@ public class BackProp {
     		if (tonyTrain){
     			it.generateClusterTony(pd, "TrainingSetBeta.jpg");
     			trainingAlphabet = it.generateAlphabetMapTony(pd.getLetters(), imgSize);
-    		} else{
+    		} else if (danTrain) {
+    			ppDan.Ink danInk = new ppDan.Ink();
+    			danInk = Preprocess.getInk();
+    		}
+    		else{
     			trainingAlphabet = it.generateAlphabetMap(imgSize);
     		}
     		
