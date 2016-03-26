@@ -55,8 +55,34 @@ public class LexiconTestHarness {
 	 */
 	public void testWordUse(){
 		
-		testLexicon.useWord("dog");
-		testLexicon.useWord("wordThatDoesNotExist");
+		try{
+			
+			testLexicon.useWord("dog");
+			testLexicon.useWord("wordThatDoesNotExist");
+			
+		}catch( InvalidWordException e){
+			
+			System.out.println( e.getMessage() );
+			System.out.println("The first two tests of the useWord method threw an exception.");
+			
+		}
+		
+		try{
+			
+			testLexicon.useWord("");
+			//testLexicon.useWord("");
+			//testLexicon.useWord("");
+			//testLexicon.useWord("");
+			
+			//TODO Come up with more examples of invalid words.
+			
+		}catch( InvalidWordException e){
+			
+			System.out.println( e.getMessage() );
+			System.out.println("The last test of the useWord method threw an exception.");
+			
+		}
+		
 		
 	}
 	
