@@ -128,12 +128,15 @@ public class ImgProcessMatt {
 			try{//get image
 				File imgf = new File(fileName);
 				img = ImageIO.read(imgf);
-				img = scaledImage(img, imgSize, imgSize);
 			}
 			catch (IOException e) {
 			  }
 		} else{
 			img = bi;
+		}
+		
+		if (imgSize != 0){
+			img = scaledImage(img, imgSize, imgSize);
 		}
 		
 		int w = img.getWidth();
