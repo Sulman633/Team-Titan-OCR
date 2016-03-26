@@ -26,12 +26,9 @@ public class Lexicon {
 	/**
 	 * The password that will be used to log into the mySql server.
 	 */
-<<<<<<< HEAD
+
 	private final String DB_PASSWORD = "RyLFh7bdvT"; // RyLFh7bdvT
 
-=======
-	private final String DB_PASSWORD = "RyLFh7bdvT";
->>>>>>> c4c7b68cb5d6579bac56331db73553c8d39555e4
 	
 	public Lexicon() {
 		
