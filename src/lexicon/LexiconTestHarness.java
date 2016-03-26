@@ -14,7 +14,7 @@ public class LexiconTestHarness {
 
 		testLexicon = new Lexicon();
 		
-		testLookup();
+		testLexicon.loadDB();
 		
 		//testLexicon.useWord("dog");
 		
