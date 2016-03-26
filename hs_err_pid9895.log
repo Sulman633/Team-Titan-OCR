@@ -1,0 +1,98 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (malloc) failed to allocate 63963136 bytes for committing reserved memory.
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   In 32 bit mode, the process size limit was hit
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Use 64 bit Java on a 64 bit OS
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (os_linux.cpp:2827), pid=9895, tid=140675687364352
+#
+# JRE version: OpenJDK Runtime Environment (7.0_95) (build 1.7.0_95-b00)
+# Java VM: OpenJDK 64-Bit Server VM (24.95-b01 mixed mode linux-amd64 compressed oops)
+# Derivative: IcedTea 2.6.4
+# Distribution: Ubuntu 14.04.3 LTS, package 7u95-2.6.4-0ubuntu0.14.04.1
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007ff198075800):  VMThread [stack: 0x00007ff19c4fb000,0x00007ff19c5fc000] [id=9906]
+
+Stack: [0x00007ff19c4fb000,0x00007ff19c5fc000],  sp=0x00007ff19c5fa490,  free space=1021k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0x9550e5]
+V  [libjvm.so+0x4902b4]
+V  [libjvm.so+0x7cf7bb]
+V  [libjvm.so+0x7ca28f]
+V  [libjvm.so+0x83e56b]
+V  [libjvm.so+0x83f3e0]
+V  [libjvm.so+0x83facb]
+V  [libjvm.so+0x83b4d8]
+V  [libjvm.so+0x83bd48]
+V  [libjvm.so+0x7f1fd3]
+V  [libjvm.so+0x956ae4]
+V  [libjvm.so+0x95abe7]
+V  [libjvm.so+0x9596a8]
+V  [libjvm.so+0x959b09]
+V  [libjvm.so+0x959f52]
+V  [libjvm.so+0x7cc682]
+
+VM_Operation (0x00007ff1a172e6f0): ParallelGCFailedAllocation, mode: safepoint, requested by thread 0x00007ff19800a000
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x00007ff198188000 JavaThread "Java2D Disposer" daemon [_thread_blocked, id=9914, stack(0x00007ff18c040000,0x00007ff18c141000)]
+  0x00007ff1980ae800 JavaThread "Service Thread" daemon [_thread_blocked, id=9912, stack(0x00007ff19471c000,0x00007ff19481d000)]
+  0x00007ff1980ac000 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=9911, stack(0x00007ff19481d000,0x00007ff19491e000)]
+  0x00007ff1980a9800 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=9910, stack(0x00007ff19c0f7000,0x00007ff19c1f8000)]
+  0x00007ff1980a7000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=9909, stack(0x00007ff19c1f8000,0x00007ff19c2f9000)]
+  0x00007ff19807c000 JavaThread "Finalizer" daemon [_thread_blocked, id=9908, stack(0x00007ff19c2f9000,0x00007ff19c3fa000)]
+  0x00007ff19807a000 JavaThread "Reference Handler" daemon [_thread_blocked, id=9907, stack(0x00007ff19c3fa000,0x00007ff19c4fb000)]
+  0x00007ff19800a000 JavaThread "main" [_thread_blocked, id=9901, stack(0x00007ff1a162f000,0x00007ff1a1730000)]
+
+Other Threads:
+=>0x00007ff198075800 VMThread [stack: 0x00007ff19c4fb000,0x00007ff19c5fc000] [id=9906]
+  0x00007ff1980b9800 WatcherThread [stack: 0x00007ff19461b000,0x00007ff19471c000] [id=9913]
+
+VM state:at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x00007ff1980063a0] Threads_lock - owner thread: 0x00007ff198075800
+[0x00007ff1980068a0] Heap_lock - owner thread: 0x00007ff19800a000
+
+Heap
+ PSYoungGen      total 49152K, used 2048K [0x00000000ecf00000, 0x00000000f0f00000, 0x0000000100000000)
+  eden space 47104K, 0% used [0x00000000ecf00000,0x00000000ecf00000,0x00000000efd00000)
+  from space 2048K, 100% used [0x00000000f0b00000,0x00000000f0d00000,0x00000000f0d00000)
+  to   space 2048K, 0% used [0x00000000f0d00000,0x00000000f0d00000,0x00000000f0f00000)
+ ParOldGen       total 66048K, used 57810K [0x00000000c6e00000, 0x00000000cae80000, 0x00000000ecf00000)
+  object space 66048K, 87% used [0x00000000c6e00000,0x00000000ca6748d8,0x00000000cae80000)
+ PSPermGen       total 21504K, used 4719K [0x00000000bc800000, 0x00000000bdd00000, 0x00000000c6e00000)
+  object space 21504K, 21% used [0x00000000bc800000,0x00000000bcc9bc08,0x00000000bdd00000)
+
+Card table byte_map: [0x00007ff19e048000,0x00007ff19e265000] byte_map_base: 0x00007ff19da64000
+
+Polling page: 0x00007ff1a174f000
+
+Code Cache  [0x00007ff195000000, 0x00007ff195270000, 0x00007ff198000000)
+ total_blobs=275 nmethods=49 adapters=180 free_code_cache=48659Kb largest_free_block=49807808
+
+Compilation events (10 events):
+Event: 1.040 Thread 0x00007ff1980a9800   45             java.awt.image.ComponentColorModel::getDataElements (3206 bytes)
+Event: 1.041 Thread 0x00007ff1980ac000   46             sun.awt.image.ByteInterleavedRaster::setDataElements (119 bytes)
+Event: 1.070 Thread 0x00007ff1980ac000 nmethod 46 0x00007ff195076850 code [0x00007ff1950769c0, 0x00007ff195076c78]
+Event: 1.070 Thread 0x00007ff1980ac000   47             sun.awt.image.SunWritableRaster::markDirty (8 bytes)
+Event: 1.070 Thread 0x00007ff1980a9800 nmethod 45 0x00007ff195072c50 code [0x00007ff195072e00, 0x00007ff1950736b8]
+Event: 1.070 Thread 0x00007ff1980a9800   48             sun.java2d.StateTrackableDelegate::markDirty (6 bytes)

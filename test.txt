@@ -1,5 +1,7 @@
-This is a test :^)
-Sulman was here!
-Imran was here too!
-Testing branches
-mafuckkkkkkkkkkassss 
+<<<<<<< HEAD
+sadfasdf
+asdfasdfsadf
+=======
+sadfasdf
+asdfasdfsadf
+>>>>>>> 32989bad4a2f71e460f79be1ac327b9c5362230d
