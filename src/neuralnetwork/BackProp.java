@@ -22,9 +22,9 @@ public class BackProp {
 	static String fileName = "NNSave.txt"; // Name of save file for NN
 	
 	//PARAMETERS TO SET
-	static boolean productionMode = false; // Are we running a pre trained neural network?
-	static boolean tonyTrain = true; // Do we train using Tony's character Recognition?
-	static int imgSize = 5;
+	static boolean productionMode = true; // Are we running a pre trained neural network?
+	static boolean tonyTrain = false; // Do we train using Tony's character Recognition?
+	static int imgSize = 20;
 	static int epochs = 400; // Number of epochs while learning
 	static double learningRate = 0.20;
 	static int alphabetSize = 56; // Size of the alphabet (Number of output nodes) (Do not change)
@@ -236,8 +236,7 @@ public class BackProp {
      */
     public static void initialization() {
     	
-    	System.out.println("How many pixels in the image?");
-    	int inputLayerSize = sc.nextInt(); // Number of Input Nodes
+    	int inputLayerSize = imgSize*imgSize; // Number of Input Nodes
     	System.out.println("Number of hidden nodes?");
         int hiddenLayerSize = sc.nextInt(); // Number of Hidden Nodes
     	System.out.println("Size of Alphabet is: " + alphabetSize);

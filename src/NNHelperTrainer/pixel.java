@@ -1,4 +1,4 @@
-package preprocess;
+package NNHelperTrainer;
 
 import java.awt.Color;
 
