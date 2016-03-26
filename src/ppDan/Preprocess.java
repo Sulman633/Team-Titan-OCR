@@ -16,13 +16,13 @@ import javax.swing.WindowConstants;
 
 public class Preprocess {
 
-	public static Ink getInk() {
+	public static Ink getInk(String file) {
 		// TODO Auto-generated method stub
 		
 		BufferedImage img = null;
 		
 		try{//get image
-			File imgf = new File("TrainingSetBeta.jpg");
+			File imgf = new File(file);
 			img = ImageIO.read(imgf);
 		}
 		catch (IOException e) {
@@ -62,7 +62,7 @@ public class Preprocess {
 	
 
 	//for testing purposes, not part of the actual algorithm
-	public static void Display(Word x){
+	public static BufferedImage Display(Word x){
 		int h = x.getHeight();
 		int w = x.getWidth();
 		
@@ -85,14 +85,17 @@ public class Preprocess {
 		
 		image.setRGB(0, 0, w, h, data, 0, w);
 		
-		JFrame frame = new JFrame();
-		  JLabel label = new JLabel(new ImageIcon(image));
-		  frame.getContentPane().add(label, BorderLayout.CENTER);
-		  frame.pack();
-		  frame.setVisible(true);
-		  //frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
 		
+//		JFrame frame = new JFrame();
+//		  JLabel label = new JLabel(new ImageIcon(image));
+//		  frame.getContentPane().add(label, BorderLayout.CENTER);
+//		  frame.pack();
+//		  frame.setVisible(true);
+//		  frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		  
+		  return image;
+//
+//		
 	}
 
 }
