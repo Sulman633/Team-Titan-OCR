@@ -5,12 +5,16 @@ import java.util.Arrays;
 public class Line {
 	ArrayList<Cluster> set;
 	ArrayList<Cluster> spaces;
-	ArrayList<Word> words;
+	public ArrayList<Word> words;
 	private int minX = Integer.MAX_VALUE;
 	private int maxX = Integer.MIN_VALUE;
 	private int minY = Integer.MAX_VALUE;
 	private int maxY = Integer.MIN_VALUE;
 	double avgHeight=0;
+	
+	public double getAvgHeight(){
+		return avgHeight;
+	}
 	
 	
 	public Line(){
@@ -78,14 +82,24 @@ public class Line {
 			
 		}
 		
-		if(foundWidth){
+		
+		double doubleAvgWidth=0;
+		for(int i=0; i<spaces.size();i++){
+			doubleAvgWidth += spaces.get(i).getWidth();
+		}
+		
+		doubleAvgWidth = doubleAvgWidth/spaces.size();
+		
+		
+		
+		//if(foundWidth){
 			for(int i=0;i<spaces.size();i++){//remove insignificant white space clusters (spaces between letters)
-				if(spaces.get(i).getWidth()<maxWidth*.25){
+				if(spaces.get(i).getWidth()<doubleAvgWidth*.5){  //maxWidth(before)
 					spaces.remove(i);
 					i--;
 				}
 			}
-		}
+		//}
 		
 		
 		

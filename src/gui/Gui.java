@@ -52,6 +52,7 @@ public class Gui extends JFrame {
 	
 	//This method will be used to start the pre-processing 
 	private void open(){
+		BufferedImage orignalImage = null; //not scaled image
 		//Helps to filter the file types
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files", "jpg", "png", "gif", "jpeg", "pdf");
 		fc = new JFileChooser();
@@ -81,9 +82,10 @@ public class Gui extends JFrame {
 					@SuppressWarnings("unchecked")
 					List<PDPage> list = document.getDocumentCatalog().getAllPages(); //Gets all of the pages of the PDF
 	        		PDPage page = list.get(0);
-	        		bufferedImage = page.convertToImage(); //Converts the PDF
+	        		orignalImage = page.convertToImage(); //Converts the PDF
+	        		//orignalImage = bufferedImage;
 					//Scales the bufferedImage to the size of the JPanel for displaying. 
-					bufferedImage = scaledImage(bufferedImage, beforePanel.getWidth(),beforePanel.getHeight());
+					bufferedImage = scaledImage(orignalImage, beforePanel.getWidth(),beforePanel.getHeight());
 					//Cleans the JPanel before displaying.
 					beforePanel.removeAll();
 					//Create a new JPanel to hold the image with the same dimensions as the JPanel.
@@ -98,9 +100,10 @@ public class Gui extends JFrame {
 	        	}
 	        }else{
 		        try {
-					bufferedImage = ImageIO.read(selectedFile); //Converts the file into a BufferedImage
+					orignalImage = ImageIO.read(selectedFile); //Converts the file into a BufferedImage
+					//orignalImage = bufferedImage;
 					//Scales the bufferedImage to the size of the JPanel for displaying. 
-					bufferedImage = scaledImage(bufferedImage, beforePanel.getWidth(),beforePanel.getHeight());
+					bufferedImage = scaledImage(orignalImage, beforePanel.getWidth(),beforePanel.getHeight());
 					//Cleans the JPanel before displaying.
 					beforePanel.removeAll();
 					//Create a new JPanel to hold the image with the same dimensions as the JPanel.
@@ -114,6 +117,14 @@ public class Gui extends JFrame {
 				}
 	        }
 	    }
+	    
+	    GlobalImage.setImage(orignalImage);
+	    //have thread to process
+	    GlobalImage.preProcess();
+	    //if user opens again, kill thread
+	    
+	    
+	    
 	}
 	//Generates the document after converting it 
 	@SuppressWarnings("unused")

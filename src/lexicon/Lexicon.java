@@ -18,16 +18,16 @@ public class Lexicon {
 	/**
 	 * The address of the mySQL server which holds the lexicon.
 	 */
-	private final String DB_URL = "jdbc:mysql://sql5.freemysqlhosting.net/sql5107588";
+	private final String DB_URL = "jdbc:mysql://sql5.freemysqlhosting.net/sql5112409";
 	/**
 	 * The username that will be used to log into the mySql server.
 	 */
-	private final String DB_USERNAME = "sql5107588";
+	private final String DB_USERNAME = "sql5112409";
 	/**
 	 * The password that will be used to log into the mySql server.
 	 */
 
-	private final String DB_PASSWORD = "RyLFh7bdvT"; // RyLFh7bdvT
+	private final String DB_PASSWORD = "HTqAhsXIZj"; // RyLFh7bdvT
 
 	
 	public Lexicon() {
@@ -38,7 +38,7 @@ public class Lexicon {
 	/**
 	 * Establishes the connection with the SQL database.
 	 */
-	private void loadDB(){
+	public void loadDB(){
 		
 		
 		try{
@@ -47,7 +47,6 @@ public class Lexicon {
 			Class.forName(driverName);
 			
 			conn = DriverManager.getConnection(DB_URL,DB_USERNAME,DB_PASSWORD);
-			
 		}catch(Exception e){
 			
 			System.out.println("Exception caught in Lexicon when loading the DB. Either the class specified by driverName was not found or a connection to the SQL Database could not be made.");
