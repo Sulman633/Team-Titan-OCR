@@ -7,7 +7,7 @@ public class Ink {
 	
 	ArrayList<Pixel> set; //collection of pixels
 	ArrayList<Cluster> clus; //collection of clusters
-	ArrayList<Line> lines; //collection of line
+	public ArrayList<Line> lines; //collection of line
 	
 	
 	
@@ -70,28 +70,60 @@ public class Ink {
 				
 				
 				
+				boolean repeat = false;
 				for(int i=0;i<clus.size();i++){
+					repeat = false;
 					if(clus.get(i).isLine()==false){
+						
 						
 						if(minCluster.getMaxY()>=clus.get(i).getMinY()){
 							clus.get(i).connectLine();
+							//count++;
+							//new code-------
+							if(clus.get(i).getHeight()>minCluster.getHeight()){
+								minCluster = clus.get(i);
+								repeat = true;
+							}
+							
 							if(Math.abs(minCluster.getMaxY()-clus.get(i).getMaxY())<(minCluster.getHeight()/3)){//for skewed lines
 								minCluster = clus.get(i);
+								repeat = true;
 								
 							}
+							
+							
+							
 							tempLine.addCluster(clus.get(i));
+				
+							if(repeat) i=0;
 						}
 					
 					}	
 				}
 				lines.add(tempLine);
-				if(tempLine.avgHeight > maxAvgHeight) maxAvgHeight = tempLine.avgHeight;
+				
+				
+				
+				
+				if(tempLine.avgHeight > maxAvgHeight) maxAvgHeight = tempLine.avgHeight; //obsolete
 			}
-			
+			  
 		}while(minCluster!=null);
 		
+		
+		double totHeight = 0; //obsolete
+		double avgHeight; //obsolete
+		double maxHeight = Integer.MIN_VALUE;
+		for(int i=0; i<lines.size();i++){
+			totHeight += lines.get(i).getHeight(); //ob
+			if(lines.get(i).getHeight()>maxHeight) maxHeight = lines.get(i).getHeight();
+		}
+		avgHeight = totHeight/lines.size(); //ob
+		
+		System.out.println(maxHeight);
+		
 		for(int i=0;i<lines.size();i++){
-			if(maxAvgHeight/3>lines.get(i).avgHeight){
+			if(maxHeight/3>lines.get(i).getHeight()){ // maxHeight/avgHeight/maxAvgHeight
 				lines.remove(i);
 				i--;
 			}
