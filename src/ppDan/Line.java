@@ -1,10 +1,11 @@
+package ppDan;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Line {
 	ArrayList<Cluster> set;
 	ArrayList<Cluster> spaces;
-	ArrayList<Word> words;
+	public ArrayList<Word> words;
 	private int minX = Integer.MAX_VALUE;
 	private int maxX = Integer.MIN_VALUE;
 	private int minY = Integer.MAX_VALUE;
@@ -79,7 +80,7 @@ public class Line {
 		
 		if(foundWidth){
 			for(int i=0;i<spaces.size();i++){//remove insignificant white space clusters (spaces between letters)
-				if(spaces.get(i).getWidth()<maxWidth*.25){
+				if(spaces.get(i).getWidth()<maxWidth*.5){
 					spaces.remove(i);
 					i--;
 				}

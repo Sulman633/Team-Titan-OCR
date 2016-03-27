@@ -1,3 +1,4 @@
+package ppDan;
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -5,7 +6,7 @@ public class Ink {
 	
 	ArrayList<Pixel> set; //collection of pixels
 	ArrayList<Cluster> clus; //collection of clusters
-	ArrayList<Line> lines; //collection of line
+	public ArrayList<Line> lines; //collection of line
 	
 	
 	
@@ -65,19 +66,34 @@ public class Ink {
 				minCluster.connectLine();
 				tempLine.addCluster(minCluster);
 				
-				
-				
-				
+				//add this code to other shit
+							
+				boolean repeat = false;
 				for(int i=0;i<clus.size();i++){
+					repeat = false;
 					if(clus.get(i).isLine()==false){
+						
 						
 						if(minCluster.getMaxY()>=clus.get(i).getMinY()){
 							clus.get(i).connectLine();
+							//count++;
+							//new code-------
+							if(clus.get(i).getHeight()>minCluster.getHeight()){
+								minCluster = clus.get(i);
+								repeat = true;
+							}
+							
 							if(Math.abs(minCluster.getMaxY()-clus.get(i).getMaxY())<(minCluster.getHeight()/3)){//for skewed lines
 								minCluster = clus.get(i);
+								repeat = true;
 								
 							}
+							
+							
+							
 							tempLine.addCluster(clus.get(i));
+				
+							if(repeat) i=0;
 						}
 					
 					}	

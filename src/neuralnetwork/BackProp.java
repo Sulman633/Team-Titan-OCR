@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 
+import ppDan.Preprocess;
 import test.ImgProcessMatt;
 import test.PatternDetector;
 
@@ -15,8 +16,9 @@ public class BackProp {
 	static String fileName = "NNSave.txt"; // Name of save file for NN
 	
 	//PARAMETERS TO SET
-	static boolean productionMode = true; // Are we running a pre trained neural network?
+	static boolean productionMode = false; // Are we running a pre trained neural network?
 	static boolean tonyTrain = false; // Do we train using Tony's character Recognition?
+	static boolean danTrain = true;
 	static int imgSize = 20;
 	static int epochs = 400; // Number of epochs while learning
 	static double learningRate = 0.20;
@@ -351,6 +353,10 @@ public class BackProp {
     @SuppressWarnings("rawtypes")
 	public static void trainMethod(Map trainingAlphabet){
         // // // ACTUAL TRAINING HAPPENS FROM HERE DOWN
+    	
+    	trainingAlphabet = shuffle(trainingAlphabet);
+    	
+    	
     	int[] expected = new int[outputLayer.size()];
     	int[] currentInput;
     	String passedLetter;
@@ -487,6 +493,26 @@ public class BackProp {
 	    
     }
     
+    /**
+     * Shuffle
+     * @param args
+     */
+    public static Map shuffle(Map trainingAlphabet){
+    	Map newMap = new HashMap<String, int[]>(trainingAlphabet.size());
+    	List keys = new ArrayList(trainingAlphabet.values());
+    	Collections.shuffle(keys);
+    	Iterator vit = keys.iterator();
+    	for(Object o: trainingAlphabet.keySet()){
+    		newMap.put(o, vit.next());
+    	}
+    	for(Object o: newMap.keySet()){
+    		System.out.println(o.toString());
+    	}
+    	return newMap; 
+    }
+    
+    
+    
     //  MAIN FUNCTION 
     @SuppressWarnings("static-access")
 	public static void main(String[] args) {
@@ -507,7 +533,34 @@ public class BackProp {
     		if (tonyTrain){
     			it.generateClusterTony(pd, "TrainingSetBeta.jpg");
     			trainingAlphabet = it.generateAlphabetMapTony(pd.getLetters(), imgSize);
-    		} else{
+    		} 
+    		
+    		else if (danTrain) {
+    			ppDan.Ink danInk = new ppDan.Ink();
+    			danInk = Preprocess.getInk("TrainingSetBeta.jpg");
+    			
+    			int count = 0;
+    			ArrayList<BufferedImage> letterImages = new ArrayList();
+    			
+    			//System.out.println("SIZE OF LINES: " + danInk.lines.size());
+    			
+    			for (int line = 0; line < danInk.lines.size(); line++){
+    				
+    				//System.out.println("Line: " + line + ", LETTERS: " + danInk.lines.get(line).words.size());
+    				
+    				for (int word = 0; word < danInk.lines.get(line).words.size(); word++){
+    					BufferedImage bf = null;
+    					bf = Preprocess.Display(danInk.lines.get(line).words.get(word));
+    					letterImages.add(bf);
+    					count++;
+    					
+    				}
+    			}
+    			
+    			trainingAlphabet = it.generateAlphabetMapTony(letterImages, imgSize);
+    			
+    		}
+    		else{
     			trainingAlphabet = it.generateAlphabetMap(imgSize);
     		}
     		
@@ -516,11 +569,31 @@ public class BackProp {
     	
     	//testing
     	if (tonyTrain){
-    		it.generateClusterTony(pd2, "TestingSetBeta.jpg");
+    		it.generateClusterTony(pd2, "TrainingSetBeta.jpg");
     		testerTony(pd2.getLetters());
+    	}
+    	else if (danTrain){
+    		ppDan.Ink danInk2 = new ppDan.Ink();
+			danInk2 = Preprocess.getInk("TrainingSetBeta.jpg");
+			
+			int count = 0;
+			ArrayList<BufferedImage> letterImages = new ArrayList();
+			for (int line = 0; line < danInk2.lines.size(); line++){
+				for (int word = 0; word < danInk2.lines.get(line).words.size(); word++){
+					BufferedImage bf = Preprocess.Display(danInk2.lines.get(line).words.get(word));
+					letterImages.add(bf);
+					count++;
+				}
+			}
+			
+			testerTony(letterImages);
+    		
     	}
     	else{
     		tester();
     	}
     }
+    
+    
+    
 }
