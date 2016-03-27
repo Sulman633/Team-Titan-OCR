@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -20,14 +21,14 @@ public class nnTwoHarness {
 	
 	int inputNodes = 100; 
 	int outputNodes = 56;
-	int numHiddenLayers = 1;
-	int numHiddenNodes = 50;
+	int numHiddenLayers = 3;
+	int numHiddenNodes = 100;
 	static double holdTrainingSet = 1.0;
 	int k = 3;
 	static int maxEpochs = 1000;
 	boolean log = true;
 	static boolean quickprop = false;
-	double lr = 0.1;
+	double lr = 0.3;
 	double m  = 0.01;
 	static Random rand = new Random();
 
@@ -56,36 +57,50 @@ public class nnTwoHarness {
 		//get NN string
     	training = ipm.generateAlphabetMapTony(letterImages, (int) Math.sqrt(inputNodes));
 
+    	System.out.println("Making NN");
 		NeuralNetwork mainNN = new NeuralNetwork(inputNodes, outputNodes, numHiddenLayers, numHiddenNodes, log, lr, m, rand);
 		
+		System.out.println("Constructing NN");
 		setOutputRepresentations(mainNN);
 		
-		split(testing,training,holdTrainingSet);
+		System.out.println("Splitting NN");
+		//split(testing,training,holdTrainingSet);
 		
-		crossValidation(mainNN, testing, training, k);
+		System.out.println("Calling crossValidation");
+		//crossValidation(mainNN, testing, training, k);
 		
+		for (int j = 0; j < 1000; j++){
+			mainNN.trainOCR(training, false);
+			Scanner test = new Scanner(System.in);
+			test.nextLine();
+			
+//			Scanner test = new Scanner(System.in);
+//			test.nextLine();
+		}
 	}
 	
 	public void setOutputRepresentations(NeuralNetwork mainNN){
+		System.out.println("In setOutputRepresentations");
 		HelperTrainer ht = new HelperTrainer();
+		
 		for (int i = 0; i < mainNN.outputLayer.numOfNeurons(); i++){
 			ht.setOutputNodeRepresentations(mainNN.outputLayer);
 		}
 	}
 	
 	public static void crossValidation(NeuralNetwork mainNN, ArrayList<String> testing, ArrayList<String> training, int k){
-		
+		System.out.println("In crossValidation");
 		kfold(mainNN,training,k);
 		
 		for(int i=0; i<1;i++){
-			System.out.println(mainNN.validateIris(testing));			
+			System.out.println(mainNN.validateOCR(training));			
 		}
 		
 		
 	}
 	
 	public static void split(ArrayList<String> testing, ArrayList<String> training, double hO){
-		
+		System.out.println("In split");
 		int trainCandidates = (int)Math.ceil(testing.size()*hO);
 		
 		
@@ -98,6 +113,7 @@ public class nnTwoHarness {
 	}
 
 	public static void kfold(NeuralNetwork x, ArrayList<String> data, int k){
+		System.out.println("In kfold");
 		ArrayList<List<String>> folds = new ArrayList<List<String>>(); 
 		int eachSet = (int)Math.floor(data.size()/k);
 		int from =0;
@@ -108,6 +124,7 @@ public class nnTwoHarness {
 		for(int i=0;i<data.size();i=i+eachSet){
 			from  = i;
 			to = i+eachSet;
+			
 			if(to>data.size()){
 				to = data.size();
 			}
@@ -131,7 +148,7 @@ public class nnTwoHarness {
 		
 		do{
 			epoch++;
-			
+			System.out.println("Current Epoch: " + epoch);
 			
 			double validationMeasure;
 			double vsum =0;
@@ -176,8 +193,9 @@ public class nnTwoHarness {
 			avgValidation = vsum/folds.size();
 			avgTraining = tsum/folds.size();
 
-			//System.out.println("--Avg Validation Accuracy of all folds--");
-			//System.out.println(avgTraining + ", " + avgValidation);
+			System.out.println("--Avg Validation Accuracy of all folds--");
+			System.out.println(avgTraining + ", " + avgValidation);
+			
 			
 			if(epoch == maxEpochs){
 				stopTraining =true;

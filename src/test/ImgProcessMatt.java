@@ -232,7 +232,6 @@ public class ImgProcessMatt {
 			for (int i = 0; i < result.length; i ++){
 				line = line + ((double) result[i]) + ",";
 			}
-			
 			line = line + alphRep[k];
 			input.add(line);
 		}

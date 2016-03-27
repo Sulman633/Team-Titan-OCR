@@ -59,24 +59,34 @@ public class NeuralNetwork {
 	
 	
 	public double trainOCR(ArrayList<String> data, boolean quickprop){
-			
+		
 		double accuracy = 0;
 		Collections.shuffle(data,rand);
 		
 		for(int j=0; j<data.size();j++){
+			
 			double[] inputLayerData = new double[inputLayer.numOfNeurons()];
 			String[] retrieveData;
 			OCROutput expected;
+			
 			retrieveData = data.get(j).split(",");
+			
 			for(int i=0; i<inputLayerData.length;i++){
 				inputLayerData[i] = Double.parseDouble(retrieveData[i]);
 			}
-			
 			expected = new OCROutput(retrieveData[retrieveData.length-1]); //The final item in the dataset will be a string letter
 			
+			for (int i = 0; i < expected.expectedValue.length; i++){
+				System.out.print(expected.expectedValue[i] + ",");
+			}
+			System.out.println(expected.expectedString);
+			Scanner test = new Scanner(System.in);
+			test.nextLine();
 			
 			inputLayer.setValues(inputLayerData);
 			feedForward();
+			
+			//System.out.println(expected.expectedString + " --> " + outputLayer.stringOCROutput());
 			
 			if(outputLayer.stringOCROutput().equals(expected.expectedString)){
 				accuracy++;
@@ -88,6 +98,8 @@ public class NeuralNetwork {
 			else backPropagation();
 				
 		}
+		System.out.println(accuracy + "/" + data.size());
+		
 		return accuracy/data.size();
 	}
 	
@@ -100,6 +112,7 @@ public class NeuralNetwork {
 			double[] inputLayerData = new double[inputLayer.numOfNeurons()];
 			String[] retrieveData;
 			OCROutput expected;
+			
 			retrieveData = data.get(j).split(",");
 			for(int i=0; i<inputLayerData.length;i++){
 				inputLayerData[i] = Double.parseDouble(retrieveData[i]);
@@ -109,15 +122,39 @@ public class NeuralNetwork {
 			
 			inputLayer.setValues(inputLayerData);
 			feedForward();
+			
 			if(outputLayer.stringOCROutput().equals(expected.expectedString)){
 				accuracy++;
 			}	
 		}
 		
-		
+		System.out.println(accuracy);
+		System.out.println(data.size());
+		testData(data);
 		return accuracy/data.size();
 	}
 	
+	public void testData(ArrayList<String> data){
+		for(int j=0; j<data.size();j++){
+			double[] inputLayerData = new double[inputLayer.numOfNeurons()];
+			String[] retrieveData;
+			OCROutput expected;
+			
+			retrieveData = data.get(j).split(",");
+			for(int i=0; i<inputLayerData.length;i++){
+				inputLayerData[i] = Double.parseDouble(retrieveData[i]);
+			}
+			
+			expected = new OCROutput(retrieveData[retrieveData.length-1]);
+			
+			inputLayer.setValues(inputLayerData);
+			
+			feedForward();
+			
+			System.out.println(outputLayer.stringOCROutput() + " compared to " + expected.expectedString);
+		}
+	}
+
 	
 	public double trainIris(ArrayList<String> data,boolean quickprop){
 				
