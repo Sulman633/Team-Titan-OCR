@@ -91,7 +91,7 @@ public class Gui extends JFrame {
 					picLabel.setIcon(new ImageIcon(bufferedImage));
 					picLabel.setBounds(0, 0, beforePanel.getWidth(), beforePanel.getHeight());
 					beforePanel.add(picLabel);
-					beforePanel.repaint(); //Redo the rendering for JPanel
+					beforePanel.repaint(); //Re-do the rendering for JPanel
 	        		
 	        	} catch (IOException e) {
 	        		e.printStackTrace();
