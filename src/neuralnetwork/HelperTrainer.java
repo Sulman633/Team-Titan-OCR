@@ -10,11 +10,10 @@ public class HelperTrainer {
 	}
 	
 	//Will set the matching output node to the letter it represents
-	public ArrayList<NeuronOLD> setOutputNodeRepresentations(ArrayList<NeuronOLD> output){
-		for (int node = 0; node < output.size(); node++){
-			output.get(node).outputNodeRepresentation = letterMatch(node);
+	public void setOutputNodeRepresentations(Layer outputLayer){
+		for (int node = 0; node < outputLayer.numOfNeurons(); node++){
+			outputLayer.getNeuron(node).letterRepresentation = letterMatch(node);
 		}
-		return output;
 	}
 	
 	// 

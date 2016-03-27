@@ -58,10 +58,19 @@ public class nnTwoHarness {
 
 		NeuralNetwork mainNN = new NeuralNetwork(inputNodes, outputNodes, numHiddenLayers, numHiddenNodes, log, lr, m, rand);
 		
+		setOutputRepresentations(mainNN);
+		
 		split(testing,training,holdTrainingSet);
 		
 		crossValidation(mainNN, testing, training, k);
 		
+	}
+	
+	public void setOutputRepresentations(NeuralNetwork mainNN){
+		HelperTrainer ht = new HelperTrainer();
+		for (int i = 0; i < mainNN.outputLayer.numOfNeurons(); i++){
+			ht.setOutputNodeRepresentations(mainNN.outputLayer);
+		}
 	}
 	
 	public static void crossValidation(NeuralNetwork mainNN, ArrayList<String> testing, ArrayList<String> training, int k){
