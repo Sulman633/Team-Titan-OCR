@@ -58,14 +58,6 @@ public class NeuralNetwork {
 	}
 	
 	
-	public double trainOCR(, boolean quickprop){
-		double accuracy = 0;
-		
-		
-		
-		return accuracy/data.length;
-	}
-	
 	public double trainOCR(ArrayList<String> data, boolean quickprop){
 			
 		double accuracy = 0;
@@ -74,27 +66,55 @@ public class NeuralNetwork {
 		for(int j=0; j<data.size();j++){
 			double[] inputLayerData = new double[inputLayer.numOfNeurons()];
 			String[] retrieveData;
-			String expected;
+			OCROutput expected;
 			retrieveData = data.get(j).split(",");
 			for(int i=0; i<inputLayerData.length;i++){
 				inputLayerData[i] = Double.parseDouble(retrieveData[i]);
 			}
 			
-			expected = retrieveData[retrieveData.length-1];
+			expected = new OCROutput(retrieveData[retrieveData.length-1]); //The final item in the dataset will be a string letter
 			
 			
 			inputLayer.setValues(inputLayerData);
 			feedForward();
 			
-			if(outputLayer.stringOCROutput().equals(expected)){
+			if(outputLayer.stringOCROutput().equals(expected.expectedString)){
 				accuracy++;
 			}
 			//
-			outputLayer.setExpected(expected.getExpectedValue());
+			outputLayer.setExpected(expected.expectedValue);
+			
 			if(quickprop) quickPropagation();
 			else backPropagation();
 				
 		}
+		return accuracy/data.size();
+	}
+	
+	public double validateOCR(ArrayList<String> data){
+		
+		double accuracy = 0;
+		Collections.shuffle(data,rand);
+		
+		for(int j=0; j<data.size();j++){
+			double[] inputLayerData = new double[inputLayer.numOfNeurons()];
+			String[] retrieveData;
+			OCROutput expected;
+			retrieveData = data.get(j).split(",");
+			for(int i=0; i<inputLayerData.length;i++){
+				inputLayerData[i] = Double.parseDouble(retrieveData[i]);
+			}
+			
+			expected = new OCROutput(retrieveData[retrieveData.length-1]);
+			
+			inputLayer.setValues(inputLayerData);
+			feedForward();
+			if(outputLayer.stringOCROutput().equals(expected.expectedString)){
+				accuracy++;
+			}	
+		}
+		
+		
 		return accuracy/data.size();
 	}
 	

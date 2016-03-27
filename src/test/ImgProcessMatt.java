@@ -230,7 +230,7 @@ public class ImgProcessMatt {
 						
 			int[] result = generateCluster(null, scaledLetter, 0);
 			for (int i = 0; i < result.length; i ++){
-				line = line + result[i] + ",";
+				line = line + ((double) result[i]) + ",";
 			}
 			
 			line = line + alphRep[k];

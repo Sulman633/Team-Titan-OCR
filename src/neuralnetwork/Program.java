@@ -1,4 +1,4 @@
-package neuralnetwork;
+package Assign1;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,28 +24,29 @@ public class Program {
 	//20 nodes for quickprop seems ideal
 	//50 nodes seems to generate the fastest and better results
 	static int k = 2;
+	static boolean cancer = true;
 	static Random rand = new Random();
 	
 	
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		
-
-		
-		
-		//cancerNN();
-		for(int i=0; i<20;i++){
-			irisNN();
-		}
-		
-		
-				
-		
-		
-
-		
-	}
+//	public static void main(String[] args) {
+//		// TODO Auto-generated method stub
+//		
+//
+//		
+//		
+//		//cancerNN();
+//		for(int i=0; i<20;i++){
+//			irisNN();
+//		}
+//		
+//		
+//				
+//		
+//		
+//
+//		
+//	}
 	
 	
 	
@@ -71,6 +72,7 @@ public class Program {
 		int inputNodes = 4;
 		int outputNodes = 3;
 		String fileName = "iris.txt";
+		cancer=false;
 		
 		ArrayList<String> testing = getInputs(fileName);
 		ArrayList<String> training = new ArrayList<String>();
@@ -90,7 +92,9 @@ public class Program {
 		//System.out.println("--TESTING--");
 		
 		for(int i=0; i<1;i++){
-			System.out.println(iris.validateIris(testing));			
+			if(!cancer)System.out.println(iris.validateIris(testing));
+			else System.out.println(iris.validateCancer(testing));
+			
 		}
 		
 		
@@ -166,10 +170,17 @@ public class Program {
 				
 				
 				
-				//System.out.println("--Training Set--");
-				trainingMeasure = x.trainIris(train,quickprop);
-				//System.out.println("--Validation Set--");
-				validationMeasure = x.trainIris(validate,quickprop);
+				if(!cancer){
+					//System.out.println("--Training Set--");
+					trainingMeasure = x.trainIris(train,quickprop);
+					//System.out.println("--Validation Set--");
+					validationMeasure = x.trainIris(validate,quickprop);
+				}else{
+					//System.out.println("--Training Set--");
+					trainingMeasure = x.trainCancer(train,quickprop);
+					//System.out.println("--Validation Set--");
+					validationMeasure = x.trainCancer(validate,quickprop);
+				}
 
 				tsum = tsum + trainingMeasure;
 				vsum = vsum+validationMeasure;

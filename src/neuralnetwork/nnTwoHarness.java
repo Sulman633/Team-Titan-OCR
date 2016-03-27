@@ -22,13 +22,14 @@ public class nnTwoHarness {
 	int outputNodes = 56;
 	int numHiddenLayers = 1;
 	int numHiddenNodes = 50;
+	static double holdTrainingSet = 1.0;
 	int k = 3;
 	static int maxEpochs = 1000;
 	boolean log = true;
 	static boolean quickprop = false;
 	double lr = 0.1;
 	double m  = 0.01;
-	Random r = new Random();
+	static Random rand = new Random();
 
 	public nnTwoHarness(){
 		initializeNN();
@@ -55,7 +56,9 @@ public class nnTwoHarness {
 		//get NN string
     	training = ipm.generateAlphabetMapTony(letterImages, (int) Math.sqrt(inputNodes));
 
-		NeuralNetwork mainNN = new NeuralNetwork(inputNodes, outputNodes, numHiddenLayers, numHiddenNodes, log, lr, m, r);
+		NeuralNetwork mainNN = new NeuralNetwork(inputNodes, outputNodes, numHiddenLayers, numHiddenNodes, log, lr, m, rand);
+		
+		split(testing,training,holdTrainingSet);
 		
 		crossValidation(mainNN, testing, training, k);
 		
@@ -72,6 +75,19 @@ public class nnTwoHarness {
 		
 	}
 	
+	public static void split(ArrayList<String> testing, ArrayList<String> training, double hO){
+		
+		int trainCandidates = (int)Math.ceil(testing.size()*hO);
+		
+		
+		for(int i=0;i<trainCandidates;i++){
+			int toRemove = rand.nextInt(testing.size()-1);
+			
+			training.add(testing.remove(toRemove));
+		}
+		
+	}
+
 	public static void kfold(NeuralNetwork x, ArrayList<String> data, int k){
 		ArrayList<List<String>> folds = new ArrayList<List<String>>(); 
 		int eachSet = (int)Math.floor(data.size()/k);
@@ -117,6 +133,7 @@ public class nnTwoHarness {
 			for(int i=0;i<folds.size();i++){
 				ArrayList<String> train = new ArrayList<String>();
 				ArrayList<String> validate = new ArrayList<String>();
+				
 				for(int j=0;j<folds.size();j++){
 					if(i==j){
 						validate.addAll(folds.get(j));
