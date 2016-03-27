@@ -11,7 +11,7 @@ import org.junit.Test;
 public class TestHarness {
 
 	HelperTrainer helperTrainer = new HelperTrainer();
-	ArrayList<Neuron> list = new ArrayList<>();
+	ArrayList<NeuronOLD> list = new ArrayList<>();
 	
 	@Test
 	public void test() {

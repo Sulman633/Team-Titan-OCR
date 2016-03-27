@@ -38,7 +38,7 @@ public class letterSplitter {
 	}
 	
 	public double runNN(BufferedImage img){
-		Neuron[] nnRep = neuralNetworkMain.determineLetter(imgProc.generateCluster(null, img, 0));
+		NeuronOLD[] nnRep = neuralNetworkMain.determineLetter(imgProc.generateCluster(null, img, 0));
 		double highestVal = 0;
 		for (int i = 0; i < nnRep.length; i++){
 			if (nnRep[i].value > highestVal){

@@ -215,9 +215,10 @@ public class ImgProcessMatt {
 	 * @param imgSize - the size (in pixels) that letters will be scaled to
 	 * @return
 	 */
-	public static Map<String, int[]> generateAlphabetMapTony(ArrayList<BufferedImage> letters, int imgSize){
-		Map<String, int[]> alphabetMap = new HashMap<String, int[]>();
+	public static ArrayList<String> generateAlphabetMapTony(ArrayList<BufferedImage> letters, int imgSize){
 		BufferedImage scaledLetter;
+		String line = "";
+		ArrayList<String> input = new ArrayList();
 		
 		//Currently using these alphabets to train the NN
 		String[] alphRep = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
@@ -228,11 +229,14 @@ public class ImgProcessMatt {
 			scaledLetter = scaledImage(letters.get(k), imgSize, imgSize);
 						
 			int[] result = generateCluster(null, scaledLetter, 0);
+			for (int i = 0; i < result.length; i ++){
+				line = line + result[i] + ",";
+			}
 			
-			alphabetMap.put(alphRep[k], result);
-	
+			line = line + alphRep[k];
+			input.add(line);
 		}
 		
-		return alphabetMap;
+		return input;
 	}
 }

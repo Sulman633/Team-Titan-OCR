@@ -25,17 +25,17 @@ public class BackProp {
 	//PARAMETERS TO SET
 	static boolean productionMode = false; // Are we running a pre trained neural network?
 	static boolean tonyTrain = false; // Do we train using Tony's character Recognition?
-	static boolean danTrain = true;
+	static boolean danTrain = false;
 	static int imgSize = 20;
 	static int epochs = 400; // Number of epochs while learning
-	static double learningRate = 0.20;
+	static double learningRate = 0.30;
 	static int alphabetSize = 56; // Size of the alphabet (Number of output nodes) (Do not change)
 	static int returnedValues = 2; // Number of results to return for each letter checked
 	
 	// 3 layer structure of the neural network
-	static ArrayList<Neuron> inputLayer = new ArrayList<Neuron>();
-	static ArrayList<Neuron> hiddenLayer = new ArrayList<Neuron>();
-	static ArrayList<Neuron> outputLayer = new ArrayList<Neuron>();
+	static ArrayList<NeuronOLD> inputLayer = new ArrayList<NeuronOLD>();
+	static ArrayList<NeuronOLD> hiddenLayer = new ArrayList<NeuronOLD>();
+	static ArrayList<NeuronOLD> outputLayer = new ArrayList<NeuronOLD>();
 	
 	
 	/**
@@ -64,6 +64,7 @@ public class BackProp {
 	    		
 	    		hiddenLayer.get(i).value = sigmoid(sum); // perform the sigmoid function on the hidden node
 	    		
+	    		
 	    		hsum = hsum + hiddenLayer.get(i).value * hiddenLayer.get(i).weight.get(b); // set the hidden node sum to the values * the connection weights
 	    	}
 	    	
@@ -90,7 +91,7 @@ public class BackProp {
      * @param hiddenLayer - number of hidden layer nodes 
      * @param outputLayer - number of output layer nodes
      */
-    public static void backP(ArrayList<Neuron> inputLayer, ArrayList<Neuron> hiddenLayer, ArrayList<Neuron> outputLayer){
+    public static void backP(ArrayList<NeuronOLD> inputLayer, ArrayList<NeuronOLD> hiddenLayer, ArrayList<NeuronOLD> outputLayer){
     	double tempWeight;
 	    		
 		//derives the error for the hidden layer from the output error
@@ -98,23 +99,27 @@ public class BackProp {
 		
     	for(int i=0; i<hiddenLayer.size();i++){ // for each hidden node
     		
+    		hiddenNodeError = 0;
+    		
     		for (int k = 0; k < outputLayer.size(); k++){
     			
     			hiddenNodeError += hiddenLayer.get(i).weight.get(k) * outputLayer.get(k).error; // calculate the error at hidden node by multiplying the output error by weight
     			
     		}
     		hiddenLayer.get(i).error = hiddenNodeError;
+    		
     	}
+    	
     	
     	//updates each input weights using the hidden layer error values
     	for(int i=0; i<hiddenLayer.size();i++){ // for each hidden node
     		
     		for(int j=0; j<inputLayer.size();j++){ // for each input node
     			
-    			// DO NOT NEED?
-    			// Calculate the error at input node by multiplying hidden node error by weight
-    			// input.get(j).error = input.get(j).weight.get(i) * hidden.get(i).error;
-    			// DO NOT NEED?
+    			//NOT NEEDED, WE NEVER USE THE INPUT LAYERS ERROR VALUES (Theyre never wrong)
+    			//Calculate the error at input node by multiplying hidden node error by weight
+    			//inputLayer.get(j).error = inputLayer.get(j).weight.get(i) * hiddenLayer.get(i).error;
+
     			
     			// Set the temporary new weight to the current rate plus the calculated change 
     			// (Learning rate * hidden layer error * derivative of hidden layer sum * input value)
@@ -175,7 +180,7 @@ public class BackProp {
      * @param input - int[] - array of pixels of image
      * @return - String - an character that closest match
      */
-    public static Neuron[] determineLetter(int[] input){
+    public static NeuronOLD[] determineLetter(int[] input){
     	setInputNodes(input);
     	feedF(null, false);
     	
@@ -192,10 +197,10 @@ public class BackProp {
     	*/
     	
     	//Returns the top X elements from the outputs
-    	Neuron smallestNeuron;
+    	NeuronOLD smallestNeuron;
     	int smallestLocation;
     	
-    	Neuron[] bestMatches = new Neuron[returnedValues];
+    	NeuronOLD[] bestMatches = new NeuronOLD[returnedValues];
     	
     	for (int i = 0; i < returnedValues; i++){
     		bestMatches[i] = outputLayer.get(i);
@@ -219,7 +224,7 @@ public class BackProp {
     
     //Helper method for determineLetter()
     //Returns the INDEX of the smallest Neuron in the passed list
-    public static int findSmallestElement(Neuron[] n){
+    public static int findSmallestElement(NeuronOLD[] n){
     	int smallestIndex = 0;
     	double smallest = n[0].value;
     	for (int i = 0; i < n.length; i ++){
@@ -248,20 +253,20 @@ public class BackProp {
         
 
         // initializes the 3 layers of neurons with random weights
-        Neuron tempNeuron;
+        NeuronOLD tempNeuron;
         
         for (int i=0; i<inputLayerSize; i++){
-            tempNeuron = new Neuron(hiddenLayerSize);
+            tempNeuron = new NeuronOLD(hiddenLayerSize);
             inputLayer.add(tempNeuron);
         }
         
         for(int i=0;i<hiddenLayerSize;i++){
-        	tempNeuron = new Neuron(outputLayerSize);
+        	tempNeuron = new NeuronOLD(outputLayerSize);
         	hiddenLayer.add(tempNeuron);
         }
         
         for(int i=0;i<outputLayerSize;i++){
-        	tempNeuron = new Neuron();
+        	tempNeuron = new NeuronOLD();
         	outputLayer.add(tempNeuron);
         }
         
@@ -431,17 +436,17 @@ public class BackProp {
     	System.out.println("type '5' or '6' to train on images 1 or 2 (a or b)");
     	System.out.println("type '7' to save the NN");
     	int in = sc.nextInt(); // Number of Input Nodes
-    	Neuron[] bestLetters;
+    	NeuronOLD[] bestLetters;
     	
     	while (in == 1 || in == 2 || in == 5 || in == 6 || in == 7){
 	    	if (in == 1){
-	    		bestLetters = determineLetter(it.generateCluster("testCaseA.jpg", null, imgSize));
+	    		bestLetters = determineLetter(it.generateCluster("lowera.jpg", null, imgSize));
 	    		for (int nnOutputNode = 0; nnOutputNode < alphabetSize; nnOutputNode++){
         			System.out.println("Current output node: " + nnOutputNode + "\tOutput: " + outputLayer.get(nnOutputNode).value + "\t Error: "+ outputLayer.get(nnOutputNode).error );
         		}
 	    	}
 	    	else if (in == 2){
-	    		bestLetters = determineLetter(it.generateCluster("testCaseB.jpg", null, imgSize));
+	    		bestLetters = determineLetter(it.generateCluster("lowerb.jpg", null, imgSize));
 	    		for (int nnOutputNode = 0; nnOutputNode < alphabetSize; nnOutputNode++){
         			System.out.println("Current output node: " + nnOutputNode + "\tOutput: " + outputLayer.get(nnOutputNode).value + "\t Error: "+ outputLayer.get(nnOutputNode).error );
         		}
@@ -471,13 +476,13 @@ public class BackProp {
     
     public static void testerTony(ArrayList<BufferedImage> testingLetters){
     	String results = "";
-    	Neuron[] ns;
+    	NeuronOLD[] ns;
     	
     	for (int k = 0; k < testingLetters.size(); k++){
     		 ns = determineLetter(it.generateCluster(null, testingLetters.get(k), imgSize));
     		 
     		 double best = 0;
-    		 Neuron bestn = null;
+    		 NeuronOLD bestn = null;
     		 for (int i = 0; i<ns.length; i++){
     			 if (ns[i].value > best){
     				 best = ns[i].value;
