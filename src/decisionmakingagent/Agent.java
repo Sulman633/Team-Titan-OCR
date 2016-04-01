@@ -122,8 +122,11 @@ public class Agent {
 		
 		for( int i = 0; i < wordList.size(); i++ ){
 			
+			System.out.println( "Now working on the #" + i + "word from the list of generated combos." );
+			
 			Neuron [] preSearchWord = new Neuron[wordList.get(i).CHARS.length];
 			
+			//Removes the letters that fall below a certain threshold.
 			for( int j = 0; j < wordList.get(i).CHARS.length; j++ ){
 				
 				if( wordList.get(i).CHARS[j].value > UNKNOWN_LETTER_CUTOFF ) preSearchWord[j] = wordList.get(i).CHARS[j];
@@ -132,9 +135,10 @@ public class Agent {
 			
 			String [] result = {""};
 			
+			//Transfer the word to a new string to query the DB with.
 			for( int k = 0; k < wordList.get(i).CHARS.length; k++ ){
 				
-				if( preSearchWord[i] != null  ) result[0] += preSearchWord[i].outputNodeRepresentation;
+				if( preSearchWord[k] != null  ) result[0] += preSearchWord[k].outputNodeRepresentation;
 				else result[0] += "_";
 				
 			}
@@ -151,7 +155,7 @@ public class Agent {
 				for( int m = 0; m < resultantWords[l].WORD.length(); m++ ){
 					
 					//Check to see if we're dealing with a blank character that has been filled in, meaning we have a new word.
-					if( preSearchWord[m].outputNodeRepresentation.charAt(0) != (resultantWords[l].WORD.charAt(m) )){
+					if( preSearchWord[m] == null || (preSearchWord[m].outputNodeRepresentation.charAt(0) != (resultantWords[l].WORD.charAt(m) ) )){
 						
 						postSearchWord[m] = new Neuron();
 						postSearchWord[m].outputNodeRepresentation = "" + resultantWords[l].WORD.charAt(m);
@@ -162,6 +166,10 @@ public class Agent {
 				}
 				
 				PotentialWord nextNewWord = new PotentialWord(postSearchWord);
+				
+				//For debugging; prints each new word as it's created.
+				System.out.println(nextNewWord.getString());
+				
 				nextNewWord.lexiconScore = resultantWords[l].FREQ;
 				
 				boolean isDuplicate = false;
