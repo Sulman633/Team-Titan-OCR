@@ -10,20 +10,24 @@ import neuralnetwork.Neuron;
  */
 public class AgentTestingHarness {
 
+	PotentialChar [] testWord;
+	Agent a;
+	
 	public AgentTestingHarness() {
 		
-		testGenerationOfWords();
+		a = new Agent();
+		
+		initWords();
+		a.assess(testWord);
+		//testGenerationOfWords();
 		
 	}
 	/**
-	 * Tests the agent's ability to generate words from nodes in a situation identical to what it would see once integrated. 
+	 * Manually set up neurons to be used by the Agent; they will not be necessary in actual implementation.
 	 */
-	private void testGenerationOfWords(){
+	private void initWords(){
 		
-		//It's a mess, but the following ~50 lines of code are only to manually set up neurons to be used by the Agent,
-		//so they will not be necessary in actual implementation. See below for where the actual test begins.
-				
-		PotentialChar [] testWord = new PotentialChar [4];
+		testWord = new PotentialChar [4];
 		Neuron [] n0 = new Neuron[3];
 		n0[0] = new Neuron();
 		n0[0].outputNodeRepresentation = "f";
@@ -72,9 +76,11 @@ public class AgentTestingHarness {
 		n3[2].value = .80;
 		testWord[3] = new PotentialChar(n3);
 		
-		//Here is where the madness ends.
-		
-		Agent a = new Agent();
+	}
+	/**
+	 * Tests the agent's ability to generate words from nodes in a situation identical to what it would see once integrated. 
+	 */
+	private void testGenerationOfWords(){
 		
 		ArrayList<PotentialWord> combos=  a.genCombos(testWord);
 		

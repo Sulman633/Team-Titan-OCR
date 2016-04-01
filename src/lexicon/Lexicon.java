@@ -3,6 +3,8 @@ package lexicon;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import decisionmakingagent.PotentialWord;
 /**
  * Used by the decision making agent to select a word from a list of possibilities, the lexicon generates a list of candidate words, along with a frequency of use, when presented with an incomplete word or list of words.
  * Words are pulled from a pre-existing mySQL database that is loaded from a specified address. The lexicon also updates the frequency of use of a specific word in the aforementioned database when the word is chosen as the best candidate by the decision making agent. 
@@ -83,7 +85,16 @@ public class Lexicon {
 		
 		ArrayList<String> temp = new ArrayList<String>(Arrays.asList(candidates));
 		
-		return (PossibleWord[]) getMatches( temp ).toArray();
+		ArrayList<PossibleWord> resultantArrayList = getMatches( temp );
+		PossibleWord [] resultantArray = new PossibleWord[resultantArrayList.size()];
+		
+		for( int i = 0; i < resultantArrayList.size(); i++ ){
+			
+			resultantArray[i] = resultantArrayList.get(i);
+			
+		}
+		
+		return resultantArray;
 		
 	}
 	/**
