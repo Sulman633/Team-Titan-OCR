@@ -12,6 +12,7 @@ public class BackProp {
 
 	static ImgProcessMatt it = new ImgProcessMatt();
 	static HelperTrainer ht = new HelperTrainer();
+	static Shuffler sh = new Shuffler();
 	static Scanner sc = new Scanner(System.in);
 	static String fileName = "NNSave.txt"; // Name of save file for NN
 	
@@ -19,7 +20,7 @@ public class BackProp {
 	static boolean productionMode = false; // Are we running a pre trained neural network?
 	static boolean tonyTrain = false; // Do we train using Tony's character Recognition?
 	static boolean danTrain = true;
-	static int imgSize = 20;
+	static int imgSize = 10;
 	static int epochs = 400; // Number of epochs while learning
 	static double learningRate = 0.20;
 	static int alphabetSize = 56; // Size of the alphabet (Number of output nodes) (Do not change)
@@ -370,23 +371,42 @@ public class BackProp {
 	    	// iterate through the map
 	    	Iterator it = trainingAlphabet.entrySet().iterator();
 	    	
-	    	while (it.hasNext()){
+	    	
+	    	
+//	    	while (it.hasNext()){
+//	    		
+//	    		Map.Entry pair = (Map.Entry)it.next();
+//	    		currentInput = (int[]) pair.getValue();
+//	    		passedLetter = (String) pair.getKey();
+//	    		
+//	    		setInputNodes(currentInput);
+//	    		
+//	        	expected = ht.expectedOutputValues(passedLetter, outputLayer); // get the expected values
+//	        	
+//	        	//Running the actual program to train this instance
+//	        	feedF(expected, true); 
+	    	
+	    	String letterToTrain;
+	    	int[] randomNums = sh.createList(52);
+	    	sh.shuffle(randomNums);
+	    	
+	    	for (int num = 0; num < randomNums.length; num++){
+	    		letterToTrain = ht.letterMatch(randomNums[num]); // Returns the specific letter
 	    		
-	    		Map.Entry pair = (Map.Entry)it.next();
-	    		currentInput = (int[]) pair.getValue();
-	    		passedLetter = (String) pair.getKey();
+	    		//System.out.println(letterToTrain);
+	    		currentInput = (int[]) trainingAlphabet.get(letterToTrain); // Gets the NN representation
 	    		
 	    		setInputNodes(currentInput);
 	    		
-	        	expected = ht.expectedOutputValues(passedLetter, outputLayer); // get the expected values
+	        	expected = ht.expectedOutputValues(letterToTrain, outputLayer); // get the expected values
 	        	
 	        	//Running the actual program to train this instance
-	        	feedF(expected, true); 
+	        	feedF(expected, true);
 	        	
 	        	//user output during training to tell us whats going on during training
 	        	if (count%100 == 0){
 	        		for (int nnOutputNode = 0; nnOutputNode < 1; nnOutputNode++){
-	        			System.out.println("  --  " + passedLetter + "  --  Current output node: " + nnOutputNode + "\tOutput: " + outputLayer.get(nnOutputNode).value + "\t Error: "+ outputLayer.get(nnOutputNode).error );
+	        			System.out.println("  --  " + letterToTrain + "  --  Current output node: " + nnOutputNode + "\tOutput: " + outputLayer.get(nnOutputNode).value + "\t Error: "+ outputLayer.get(nnOutputNode).error );
 	        		}
 	        	}
 	        }
