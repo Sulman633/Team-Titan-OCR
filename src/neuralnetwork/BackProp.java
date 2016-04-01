@@ -27,7 +27,7 @@ public class BackProp {
 	static boolean productionMode = false; // Are we running a pre trained neural network?
 	static boolean tonyTrain = false; // Do we train using Tony's character Recognition?
 	static boolean danTrain = true;
-	static int imgSize = 5;
+	static int imgSize = 10;
 	static int epochs = 400; // Number of epochs while learning
 	static double learningRate = 0.20;
 	static int alphabetSize = 56; // Size of the alphabet (Number of output nodes) (Do not change)
