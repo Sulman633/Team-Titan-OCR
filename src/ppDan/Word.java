@@ -43,7 +43,7 @@ public class Word {
 	public void fLetters(){
 		for(int i=0; i<set.size();i++){//go through cluster
 			for(int j=0; j<set.get(i).getSet().size();j++){//get point from each cluster
-				System.out.println("Point, " + set.get(i).getPixel(j).getX() + ", " + set.get(i).getPixel(j).getY());
+				//System.out.println("Point, " + set.get(i).getPixel(j).getX() + ", " + set.get(i).getPixel(j).getY());
 				
 			}
 		}
@@ -69,7 +69,7 @@ public class Word {
 		width = getWidth()/k; //aprox width of a single letter
 		
 		//for each, find initial centroid
-		System.out.println("--Starting Weights--");
+		//System.out.println("--Starting Weights--");
 		for(int i=0; i<k;i++){
 			double x;
 			double y;
@@ -77,7 +77,7 @@ public class Word {
 			//x = minX + width*(i) + width;
 			y = minY;
 			
-			System.out.println(x + ", " + y);
+			//System.out.println(x + ", " + y);
 			letters.add(new Cluster(x,y));
 		}
 		
@@ -136,7 +136,7 @@ public class Word {
 			
 			toStop = true;
 			
-			System.out.println("-----New centroids----");
+			//System.out.println("-----New centroids----");
 			//update centroids
 			for(int i=0;i<letters.size();i++){
 				double newX;
@@ -160,7 +160,7 @@ public class Word {
 				newX = memX/totalMem;
 				newY = memY/totalMem;
 				
-				System.out.println(newX + ", " + newY);
+				//System.out.println(newX + ", " + newY);
 				
 				double diff1 = Math.abs(oldX-newX);
 				double diff2 = Math.abs(oldY-newY);
@@ -184,7 +184,7 @@ public class Word {
 		//System.out.println(1.0/k);
 		
 		for(int i=0; i<letters.size();i++){
-			System.out.println("Centroid " + i +", " + letters.get(i).centroidX + ", " + letters.get(i).centroidY);
+			//System.out.println("Centroid " + i +", " + letters.get(i).centroidX + ", " + letters.get(i).centroidY);
 			for(int j=0; j<letters.get(i).getSet().size();j++){
 				/*double maxp = -1;
 				double maxi = i;
@@ -203,7 +203,7 @@ public class Word {
 				
 				
 				if(letters.get(i).getMemCoefficient(j)>=radius){
-					System.out.println("Point, " + letters.get(i).getPixel(j).getX() +", " + letters.get(i).getPixel(j).getY() + ", " + letters.get(i).getMemCoefficient(j));
+					//System.out.println("Point, " + letters.get(i).getPixel(j).getX() +", " + letters.get(i).getPixel(j).getY() + ", " + letters.get(i).getMemCoefficient(j));
 				}
 			}
 		}

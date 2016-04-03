@@ -28,11 +28,12 @@ public class BackProp {
 	static boolean tonyTrain = false; // Do we train using Tony's character Recognition?
 	static boolean danTrain = true;
 	static int imgSize = 10;
+	static int hiddenLayerSize = 52;
 	static int epochs = 400; // Number of epochs while learning
-	static double learningRate = 0.3;
+	static double learningRate = 0.2;
 	static int alphabetSize = 56; // Size of the alphabet (Number of output nodes) (Do not change)
 	static int returnedValues = 2; // Number of results to return for each letter checked
-	static int swapRate = 300; // The larger this number, the more often we swap between training
+	static int swapRate = 150; // The larger this number, the more often we swap between training
 							 // alphabets during training
 	
 	// 3 layer structure of the neural network
@@ -239,16 +240,20 @@ public class BackProp {
     /**
      * initializes a new neural network
      */
-    public static void initialization() {
+    public static void initialization(boolean prompt) {
     	
-    	int inputLayerSize = imgSize*imgSize; // Number of Input Nodes
-    	System.out.println("Number of hidden nodes?");
-        int hiddenLayerSize = sc.nextInt(); // Number of Hidden Nodes
-    	System.out.println("Size of Alphabet is: " + alphabetSize);
-        int outputLayerSize = alphabetSize; // Number of Output Nodes
-        System.out.println("Number of training epochs?");
-        epochs = sc.nextInt(); // Number of Hidden Nodes
-        
+		int inputLayerSize = imgSize*imgSize; // Number of Input Nodes
+		int outputLayerSize = alphabetSize; // Number of Output Nodes
+	
+		if (prompt) {
+			System.out.println("Number of hidden nodes?");
+			hiddenLayerSize = sc.nextInt(); // Number of Hidden Nodes
+			System.out.println("Size of Alphabet is: " + alphabetSize);
+			System.out.println("Number of training epochs?");
+			epochs = sc.nextInt(); // Number of Hidden Nodes
+		}
+		
+		
 
         // initializes the 3 layers of neurons with random weights
         Neuron tempNeuron;
@@ -361,6 +366,7 @@ public class BackProp {
      * @param trainingAlphabet
      */
     public static void trainMethod(Map[] trainingAlphabetList){
+    	System.out.println("asd");
         // // // ACTUAL TRAINING HAPPENS FROM HERE DOWN
     	Map<String, int[]> trainingAlphabet = new HashMap<String, int[]>();
     	int[] expected = new int[outputLayer.size()];
@@ -373,12 +379,11 @@ public class BackProp {
     	int totalCount = 0;
     	
     	for (int currentRun = 0; currentRun < swapRate; currentRun++){ //we will train through the list of alphabets multiple times
-   
 	    	for (int currentAlph = 0; currentAlph < trainingAlphabetList.length; currentAlph++ ){ //For every alphabet
 	    		trainingAlphabet = trainingAlphabetList[currentAlph];
 	    		
 		    	for (int count = 0; count < epochs/(trainingAlphabetList.length*swapRate); count++){
-			    	// iterate through the map
+		    		// iterate through the map
 			    	Iterator it = trainingAlphabet.entrySet().iterator();
 			    	
 			    	
@@ -398,7 +403,6 @@ public class BackProp {
 			        	
 			        	//Running the actual program to train this instance
 			        	feedF(expected, true);
-			        	
 			        	//user output during training to tell us whats going on during training
 			        	if (totalCount%100 == 0){
 			        		for (int nnOutputNode = 0; nnOutputNode < 1; nnOutputNode++){
@@ -407,7 +411,7 @@ public class BackProp {
 			        	}
 			        }
 			        if (totalCount%10 == 0){
-			        	if (count > 0){
+			        	if (totalCount > 0){
 			        		System.out.println("Training... : " + totalCount + "/" + epochs + " on trainingAlphabetList[" + currentAlph + "]");
 			        		currTime = System.currentTimeMillis();
 			        		endTime = (int) ((currTime-startTime)/totalCount)*(epochs-totalCount);
@@ -442,6 +446,7 @@ public class BackProp {
      */
     @SuppressWarnings("static-access")
 	public static void saver(){
+    	printParams();
     	//user testing the training!
     	System.out.println("type '1' to save your network to a text file");
     	int in = sc.nextInt(); // Number of Input Nodes
@@ -453,7 +458,7 @@ public class BackProp {
     }
     
     //Runs through a given set of letter images and prints each letter identification
-    public static void tester(ArrayList<BufferedImage> testingLetters){
+    public static String tester(ArrayList<BufferedImage> testingLetters){
     	String results = "";
     	Neuron[] ns;
     	
@@ -476,6 +481,8 @@ public class BackProp {
     		 
     	}
     	System.out.println("Complete.");
+    	
+    	return results;
 	    
     }
     
@@ -505,21 +512,45 @@ public class BackProp {
 		
     }
     
+    public static void printParams(){
+    	System.out.println("Epochs: " + epochs);
+    	System.out.println("Learning Rate: " + learningRate);
+    	System.out.println("Hidden Nodes: " + hiddenLayerSize);
+    	System.out.println("Image Size: " + imgSize);
+    	System.out.println("Swap Rate: " + swapRate);
+    }
+    
     //  MAIN FUNCTION 
     public static void main(String[] args) {
     	PatternDetector pd = new PatternDetector();
     	PatternDetector pd2 = new PatternDetector();
     	
     	Map<String, int[]> trainingAlphabet = new HashMap<String, int[]>();
-    	
+       
+	//Taking args from prompt.
+	if (args.length == 0)
+		initialization(true); //initialize a plain NN
+	else if (args.length == 5) {
+		imgSize = Integer.parseInt(args[0]);
+		hiddenLayerSize = Integer.parseInt(args[1]);
+		epochs = Integer.parseInt(args[2]);
+		learningRate = Double.parseDouble(args[3]);
+		swapRate = Integer.parseInt(args[4]);
+		System.out.println("*** Proceeding with external parameters.");
+		System.out.println("*** " + args[0] + args[1] + args[2] + args[3] + args[4] + ".");
+		initialization(false);
+	} else {
+		System.out.println("!!! INCORRECT NUMBER OF PARAMETERS !!!");
+		System.out.println("*** Proceeding with default values.");
+		initialization(true); //initialize a plain NN
+	}
+
     	//training
     	if (productionMode){
         	System.out.println("ENSURE the following settings are the same!!");
-    		initialization(); //initialize a plain NN
     		loadNeuralNetwork();
     		
     	} else{
-    		initialization(); //initialize a plain NN
     		
     		if (tonyTrain){
         		System.out.println("Training using Tony");
@@ -560,19 +591,27 @@ public class BackProp {
     	
     	else if (danTrain){
     		ppDan.Ink danInk2 = new ppDan.Ink();
-			danInk2 = Preprocess.getInk("TrainingSetBeta.jpg");
+			danInk2 = Preprocess.getInk("FourLetterTest.jpg");
 			
 			int count = 0;
-			ArrayList<BufferedImage> letterImages = new ArrayList();
+			ArrayList<ppDan.Word> wordFiles = new ArrayList();
 			for (int line = 0; line < danInk2.lines.size(); line++){
 				for (int word = 0; word < danInk2.lines.get(line).words.size(); word++){
-					BufferedImage bf = Preprocess.Display(danInk2.lines.get(line).words.get(word));
-					letterImages.add(bf);
+					ppDan.Word w = danInk2.lines.get(line).words.get(word);
+					wordFiles.add(w);
 					count++;
 				}
 			}
+			ArrayList<BufferedImage> wordLettersImg = new ArrayList();
+			int kValue = 1;
+			String result = "";
 			
-			tester(letterImages);
+			for (int wordIndex = 0; wordIndex < wordFiles.size(); wordIndex++){
+				wordLettersImg = wordFiles.get(wordIndex).findLetters(kValue, 1.05, 0.9, 0.75);
+				result = result + tester(wordLettersImg) + " ";
+			}
+			
+			System.out.println(result);
 			
 			saver();
     		
