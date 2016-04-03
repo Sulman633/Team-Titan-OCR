@@ -240,16 +240,18 @@ public class BackProp {
     /**
      * initializes a new neural network
      */
-    public static void initialization() {
+    public static void initialization(boolean prompt) {
     	
-    	int inputLayerSize = imgSize*imgSize; // Number of Input Nodes
-    	System.out.println("Number of hidden nodes?");
-        hiddenLayerSize = sc.nextInt(); // Number of Hidden Nodes
-    	System.out.println("Size of Alphabet is: " + alphabetSize);
-        int outputLayerSize = alphabetSize; // Number of Output Nodes
-        System.out.println("Number of training epochs?");
-        epochs = sc.nextInt(); // Number of Hidden Nodes
-        
+	int inputLayerSize = imgSize*imgSize; // Number of Input Nodes
+	int outputLayerSize = alphabetSize; // Number of Output Nodes
+
+	if (prompt) {
+		System.out.println("Number of hidden nodes?");
+		hiddenLayerSize = sc.nextInt(); // Number of Hidden Nodes
+		System.out.println("Size of Alphabet is: " + alphabetSize);
+		System.out.println("Number of training epochs?");
+		epochs = sc.nextInt(); // Number of Hidden Nodes
+	}
 
         // initializes the 3 layers of neurons with random weights
         Neuron tempNeuron;
@@ -515,16 +517,20 @@ public class BackProp {
        
 	//Taking args from prompt.
 	if (args.length == 0)
-		initialization(); //initialize a plain NN
+		initialization(true); //initialize a plain NN
 	else if (args.length == 5) {
 		imgSize = Integer.parseInt(args[0]);
 		hiddenLayerSize = Integer.parseInt(args[1]);
 		epochs = Integer.parseInt(args[2]);
 		learningRate = Double.parseDouble(args[3]);
 		swapRate = Integer.parseInt(args[4]);
+		System.out.println("*** Proceeding with external parameters.");
+		System.out.println("*** " + args[0] + args[1] + args[2] + args[3] + args[4] + ".");
+		initialization(false);
 	} else {
 		System.out.println("!!! INCORRECT NUMBER OF PARAMETERS !!!");
-		System.out.println("    Proceeding with default values.");
+		System.out.println("*** Proceeding with default values.");
+		initialization(true); //initialize a plain NN
 	}
 
     	//training
