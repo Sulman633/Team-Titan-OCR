@@ -1,8 +1,15 @@
 package ppDan;
+
+import java.awt.BorderLayout;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 public class Word {
 	ArrayList<Cluster> set;
@@ -44,13 +51,16 @@ public class Word {
 		
 	}
 	
-	public void findLetters(){
+	public ArrayList<BufferedImage> findLetters(int k2, double f, double r, double wA){//input parameters, fuzz, width adjust, radius
 		
 		//i have all datapoints for a word
 		//find weights
-		int k=1; //4 letters in the word
-		double fuzz = 1.3; //fuzzy parameter
+		int k=k2; //4 letters in the word
+		double fuzz = f; //fuzzy parameter - variable
+		double radius = r;
+		double wAdjust = wA;
 		ArrayList<Cluster> letters;
+		ArrayList<BufferedImage> letterImg = new ArrayList<BufferedImage>();
 		double width;
 		int numOfPoints = 0;
 		
@@ -63,7 +73,8 @@ public class Word {
 		for(int i=0; i<k;i++){
 			double x;
 			double y;
-			x = minX + width*(i) + width/2;
+			x = minX + width*(i) + width*wAdjust; //.75 variable
+			//x = minX + width*(i) + width;
 			y = minY;
 			
 			System.out.println(x + ", " + y);
@@ -191,12 +202,19 @@ public class Word {
 				
 				
 				
-				if(letters.get(i).getMemCoefficient(j)>=.7){
+				if(letters.get(i).getMemCoefficient(j)>=radius){
 					System.out.println("Point, " + letters.get(i).getPixel(j).getX() +", " + letters.get(i).getPixel(j).getY() + ", " + letters.get(i).getMemCoefficient(j));
 				}
 			}
 		}
 		
+		for(int i=0; i<letters.size();i++){
+			letterImg.add(Display(letters.get(i),radius));
+			
+		}
+		
+		
+		return letterImg;
 		//k validity test
 		
 		
@@ -271,6 +289,46 @@ public class Word {
 	
 	public int getWidth(){
 		return maxX-minX;
+	}
+	
+	public static BufferedImage Display(Cluster x,double mem){
+		
+		
+		
+		
+		int[][] imgArray = x.imgArray(mem);
+		
+		int h = x.getHeight();
+		int w = x.getWidth();
+		
+		if(h==0) h=1;
+		if(w==0) w=1;
+		
+		BufferedImage image = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);
+		
+		
+		
+		int[] data = new int[h*w];
+				
+		for(int i=0;i<h;i++){
+			for(int j=0;j<w;j++){
+				data[(i*w)+j]=imgArray[j][i];
+				
+			}
+			
+		}
+		
+		image.setRGB(0, 0, w, h, data, 0, w);
+		
+		JFrame frame = new JFrame();
+		  JLabel label = new JLabel(new ImageIcon(image));
+		  frame.getContentPane().add(label, BorderLayout.CENTER);
+		  frame.pack();
+		  frame.setVisible(true);
+		  //frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+		  return image;
+		
 	}
 	
 

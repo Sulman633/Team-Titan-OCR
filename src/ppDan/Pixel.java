@@ -30,8 +30,8 @@ public class Pixel {
 		//different distance methods
 		double distance=0;
 		
-		distance = Math.abs(Math.sqrt(Math.pow((x-kx), 2) + Math.pow((y-ky), 2)));//euclidian
-		//distance = Math.max(Math.abs(x - kx), Math.abs(y - ky)); //chebyshev
+		//distance = Math.abs(Math.sqrt(Math.pow((x-kx), 2) + Math.pow((y-ky), 2)));//euclidian
+		distance = Math.max(Math.abs(x - kx), Math.abs(y - ky)); //chebyshev
 		//distance = Math.abs(x - kx) + Math.abs(y - ky);//manhattan
 		
 		

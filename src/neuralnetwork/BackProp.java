@@ -29,10 +29,10 @@ public class BackProp {
 	static boolean danTrain = true;
 	static int imgSize = 10;
 	static int epochs = 400; // Number of epochs while learning
-	static double learningRate = 0.15;
+	static double learningRate = 0.3;
 	static int alphabetSize = 56; // Size of the alphabet (Number of output nodes) (Do not change)
 	static int returnedValues = 2; // Number of results to return for each letter checked
-	static int swapRate = 4; // The larger this number, the more often we swap between training
+	static int swapRate = 300; // The larger this number, the more often we swap between training
 							 // alphabets during training
 	
 	// 3 layer structure of the neural network
@@ -533,10 +533,10 @@ public class BackProp {
         		System.out.println("Training using Dan");
     			Map[] trainingAlphabetList = new Map[3];
     			
-    			trainingAlphabetList[0] = danTrainHelper("TrainingSetBeta.jpg");
-    			
     			trainingAlphabetList[1] = danTrainHelper("TrainingSetCharlie.jpg");
     			
+    			trainingAlphabetList[0] = danTrainHelper("TrainingSetBeta.jpg");
+    			    			
     			trainingAlphabetList[2] = danTrainHelper("TrainingSetDelta.jpg");
     			    			
     			trainMethod(trainingAlphabetList);
