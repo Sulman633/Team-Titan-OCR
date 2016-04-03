@@ -91,7 +91,7 @@ public class Preprocess {
 //		  frame.getContentPane().add(label, BorderLayout.CENTER);
 //		  frame.pack();
 //		  frame.setVisible(true);
-//		  frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		  //frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		  
 		  return image;
 //

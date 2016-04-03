@@ -20,11 +20,13 @@ public class BackProp {
 	static boolean productionMode = false; // Are we running a pre trained neural network?
 	static boolean tonyTrain = false; // Do we train using Tony's character Recognition?
 	static boolean danTrain = true;
-	static int imgSize = 15;
+	static int imgSize = 11;
 	static int epochs = 400; // Number of epochs while learning
 	static double learningRate = 0.25;
 	static int alphabetSize = 56; // Size of the alphabet (Number of output nodes) (Do not change)
 	static int returnedValues = 2; // Number of results to return for each letter checked
+	static int swapRate = 35; // The larger this number, the more often we swap between training
+							 // alphabets during training
 	
 	// 3 layer structure of the neural network
 	static ArrayList<Neuron> inputLayer = new ArrayList<Neuron>();
@@ -351,13 +353,9 @@ public class BackProp {
      * accepts a map of 56 keys (letters) and their matching NN inputs
      * @param trainingAlphabet
      */
-    @SuppressWarnings("rawtypes")
-	public static void trainMethod(Map trainingAlphabet){
+    public static void trainMethod(Map[] trainingAlphabetList){
         // // // ACTUAL TRAINING HAPPENS FROM HERE DOWN
-    	
-    	trainingAlphabet = shuffle(trainingAlphabet);
-    	
-    	
+    	Map<String, int[]> trainingAlphabet = new HashMap<String, int[]>();
     	int[] expected = new int[outputLayer.size()];
     	int[] currentInput;
     	String passedLetter;
@@ -365,61 +363,54 @@ public class BackProp {
     	long startTime = System.currentTimeMillis();
     	long currTime;
     	int endTime;
+    	int totalCount = 0;
     	
-    	for (int count = 0; count < epochs; count++){
-        
-	    	// iterate through the map
-	    	Iterator it = trainingAlphabet.entrySet().iterator();
-	    	
-	    	
-	    	
-//	    	while (it.hasNext()){
-//	    		
-//	    		Map.Entry pair = (Map.Entry)it.next();
-//	    		currentInput = (int[]) pair.getValue();
-//	    		passedLetter = (String) pair.getKey();
-//	    		
-//	    		setInputNodes(currentInput);
-//	    		
-//	        	expected = ht.expectedOutputValues(passedLetter, outputLayer); // get the expected values
-//	        	
-//	        	//Running the actual program to train this instance
-//	        	feedF(expected, true); 
-	    	
-	    	String letterToTrain;
-	    	int[] randomNums = sh.createList(52);
-	    	sh.shuffle(randomNums);
-	    	
-	    	for (int num = 0; num < randomNums.length; num++){
-	    		letterToTrain = ht.letterMatch(randomNums[num]); // Returns the specific letter
+    	for (int currentRun = 0; currentRun < swapRate; currentRun++){ //we will train through the list of alphabets multiple times
+   
+	    	for (int currentAlph = 0; currentAlph < trainingAlphabetList.length; currentAlph++ ){ //For every alphabet
+	    		trainingAlphabet = trainingAlphabetList[currentAlph];
 	    		
-	    		//System.out.println(letterToTrain);
-	    		currentInput = (int[]) trainingAlphabet.get(letterToTrain); // Gets the NN representation
-	    		
-	    		setInputNodes(currentInput);
-	    		
-	        	expected = ht.expectedOutputValues(letterToTrain, outputLayer); // get the expected values
-	        	
-	        	//Running the actual program to train this instance
-	        	feedF(expected, true);
-	        	
-	        	//user output during training to tell us whats going on during training
-	        	if (count%100 == 0){
-	        		for (int nnOutputNode = 0; nnOutputNode < 1; nnOutputNode++){
-	        			System.out.println("  --  " + letterToTrain + "  --  Current output node: " + nnOutputNode + "\tOutput: " + outputLayer.get(nnOutputNode).value + "\t Error: "+ outputLayer.get(nnOutputNode).error );
-	        		}
-	        	}
-	        }
-	        if (count%10 == 0){
-	        	if (count > 0){
-	        		System.out.println("Training... : " + count + "/" + epochs);
-	        		currTime = System.currentTimeMillis();
-	        		endTime = (int) ((currTime-startTime)/count)*(epochs-count);
-	        		System.out.println("Estimated time to completion: " + (endTime/1000)/60 + " minutes and " + (endTime/1000)%60 + " seconds..");
-	        	}
-	        }
-	    	
-        }
+		    	for (int count = 0; count < epochs/(trainingAlphabetList.length*swapRate); count++){
+			    	// iterate through the map
+			    	Iterator it = trainingAlphabet.entrySet().iterator();
+			    	
+			    	
+			    	String letterToTrain;
+			    	int[] randomNums = sh.createList(52);
+			    	sh.shuffle(randomNums);
+			    	
+			    	for (int num = 0; num < randomNums.length; num++){
+			    		letterToTrain = ht.letterMatch(randomNums[num]); // Returns the specific letter
+			    		
+			    		//System.out.println(letterToTrain);
+			    		currentInput = (int[]) trainingAlphabet.get(letterToTrain); // Gets the NN representation
+			    		
+			    		setInputNodes(currentInput);
+			    		
+			        	expected = ht.expectedOutputValues(letterToTrain, outputLayer); // get the expected values
+			        	
+			        	//Running the actual program to train this instance
+			        	feedF(expected, true);
+			        	
+			        	//user output during training to tell us whats going on during training
+			        	if (totalCount%100 == 0){
+			        		for (int nnOutputNode = 0; nnOutputNode < 1; nnOutputNode++){
+			        			System.out.println("  --  " + letterToTrain + "  --  Current output node: " + nnOutputNode + "\tOutput: " + outputLayer.get(nnOutputNode).value + "\t Error: "+ outputLayer.get(nnOutputNode).error );
+			        		}
+			        	}
+			        }
+			        if (totalCount%10 == 0){
+			        	if (count > 0){
+			        		System.out.println("Training... : " + totalCount + "/" + epochs + " on trainingAlphabetList[" + currentAlph + "]");
+			        		currTime = System.currentTimeMillis();
+			        		endTime = (int) ((currTime-startTime)/totalCount)*(epochs-totalCount);
+			        		System.out.println("Estimated time to completion: " + (endTime/1000)/60 + " minutes and " + (endTime/1000)%60 + " seconds..");
+			        	}
+			        }
+			        totalCount++;
+		        }
+	    	}
+    	}
     }
     
     /**
@@ -443,59 +434,26 @@ public class BackProp {
      * @param trainingAlphabet
      */
     @SuppressWarnings("static-access")
-	public static void tester(){
+	public static void saver(){
     	//user testing the training!
-    	System.out.println("type '1' or '2' to test images 1 or 2 (a or b)");
-    	System.out.println("type '5' or '6' to train on images 1 or 2 (a or b)");
-    	System.out.println("type '7' to save the NN");
+    	System.out.println("type '1' to save your network to a text file");
     	int in = sc.nextInt(); // Number of Input Nodes
-    	@SuppressWarnings("unused")
-		Neuron[] bestLetters;
     	
-    	while (in == 1 || in == 2 || in == 5 || in == 6 || in == 7){
-	    	if (in == 1){
-	    		bestLetters = determineLetter(it.generateCluster("testCaseA.jpg", null, imgSize));
-	    		for (int nnOutputNode = 0; nnOutputNode < alphabetSize; nnOutputNode++){
-        			System.out.println("Current output node: " + nnOutputNode + "\tOutput: " + outputLayer.get(nnOutputNode).value + "\t Error: "+ outputLayer.get(nnOutputNode).error );
-        		}
-	    	}
-	    	else if (in == 2){
-	    		bestLetters = determineLetter(it.generateCluster("testCaseB.jpg", null, imgSize));
-	    		for (int nnOutputNode = 0; nnOutputNode < alphabetSize; nnOutputNode++){
-        			System.out.println("Current output node: " + nnOutputNode + "\tOutput: " + outputLayer.get(nnOutputNode).value + "\t Error: "+ outputLayer.get(nnOutputNode).error );
-        		}
-	    	}
-	    	else if (in == 5){
-	    		int[] aNNRepresentation = it.generateCluster("testCaseA.jpg", null, imgSize);
-	    		for (int i = 0; i < 100; i++){
-	    			singleTrain("a", aNNRepresentation);
-	    		}
-	    	}
-	    	else if (in == 6){
-	    		int[] aNNRepresentation = it.generateCluster("testCaseB.jpg", null, imgSize);
-	    		for (int i = 0; i < 100; i++){
-	    			singleTrain("b", aNNRepresentation);
-	    		}
-	    	}
-	    	else if (in == 7) {
-	    		System.out.println("Save");
-	    		saveNeuralNetwork();
-	    	}
-	    	System.out.println("type '1' or '2' to test images 1 or 2 (a or b)");
-	    	System.out.println("type '5' or '6' to train on images 1 or 2 (a or b)");
-	    	System.out.println("type '7' to save the NN");
-	    	in = sc.nextInt(); // Number of Input Nodes
+		if (in == 1) {
+    		System.out.println("Saving Network..");
+    		saveNeuralNetwork();
     	}
     }
     
-    @SuppressWarnings("static-access")
-	public static void testerTony(ArrayList<BufferedImage> testingLetters){
+    //Runs through a given set of letter images and prints each letter identification
+    public static void tester(ArrayList<BufferedImage> testingLetters){
     	String results = "";
     	Neuron[] ns;
     	
     	for (int k = 0; k < testingLetters.size(); k++){
-    		 ns = determineLetter(it.generateCluster(null, testingLetters.get(k), imgSize));
+    		 ns = determineLetter(it.generateCluster(null, testingLetters.get(k), imgSize)); // identifies the passed letter
     		 
+    		 //gets the best letters
     		 double best = 0;
     		 Neuron bestn = null;
     		 for (int i = 0; i<ns.length; i++){
@@ -505,6 +463,7 @@ public class BackProp {
     			 }
     		 }
     		 
+    		 //print the results
     		 results = results + bestn.outputNodeRepresentation;
     		 System.out.println(results);
     		 
@@ -513,22 +472,51 @@ public class BackProp {
 	    
     }
     
-    /**
-     * Shuffle
-     * @param args
-     */
-    public static Map shuffle(Map trainingAlphabet){
-    	Map newMap = new HashMap<String, int[]>(trainingAlphabet.size());
-    	List keys = new ArrayList(trainingAlphabet.values());
-    	Collections.shuffle(keys);
-    	Iterator vit = keys.iterator();
-    	for(Object o: trainingAlphabet.keySet()){
-    		newMap.put(o, vit.next());
-    	}
-    	for(Object o: newMap.keySet()){
-    		System.out.println(o.toString());
-    	}
-    	return newMap; 
+    public static Map<String, int[]> danTrainHelper(String fileName){
+    	ppDan.Ink danInk = new ppDan.Ink();
+		danInk = Preprocess.getInk(fileName);
+		
+		int count = 0;
+		ArrayList<BufferedImage> letterImages = new ArrayList();
+		
+		//System.out.println("SIZE OF LINES: " + danInk.lines.size());
+		
+		for (int line = 0; line < danInk.lines.size(); line++){
+			
+			//System.out.println("Line: " + line + ", LETTERS: " + danInk.lines.get(line).words.size());
+			
+			for (int word = 0; word < danInk.lines.get(line).words.size(); word++){
+				BufferedImage bf = null;
+				bf = Preprocess.Display(danInk.lines.get(line).words.get(word));
+				letterImages.add(bf);
+				count++;
+				
+			}
+		}
+		
+		return it.generateAlphabetMapTony(letterImages, imgSize);
+		
+    }
+    
+    
+    public static boolean testingSets(String file){
+    	ppDan.Ink danInk2 = new ppDan.Ink();
+		danInk2 = Preprocess.getInk(file);
+		
+		int count = 0;
+		ArrayList<BufferedImage> letterImages = new ArrayList();
+		for (int line = 0; line < danInk2.lines.size(); line++){
+			for (int word = 0; word < danInk2.lines.get(line).words.size(); word++){
+				BufferedImage bf = Preprocess.Display(danInk2.lines.get(line).words.get(word));
+				letterImages.add(bf);
+				count++;
+			}
+		}
+		
+		tester(letterImages);
+		
+		
+		return true;
     }
     
     
@@ -551,66 +539,67 @@ public class BackProp {
     		initialization(); //initialize a plain NN
     		
     		if (tonyTrain){
+        		System.out.println("Training using Tony");
+    			Map[] trainingAlphabetList = new Map[1];
     			it.generateClusterTony(pd, "TrainingSetBeta.jpg");
-    			trainingAlphabet = it.generateAlphabetMapTony(pd.getLetters(), imgSize);
+    			trainingAlphabetList[0] = it.generateAlphabetMapTony(pd.getLetters(), imgSize);
+    			trainMethod(trainingAlphabetList); //begin training of the network
     		} 
     		
     		else if (danTrain) {
-    			ppDan.Ink danInk = new ppDan.Ink();
-    			danInk = Preprocess.getInk("TrainingSetBeta.jpg");
+        		System.out.println("Training using Dan");
+    			Map[] trainingAlphabetList = new Map[3];
     			
-    			int count = 0;
-    			ArrayList<BufferedImage> letterImages = new ArrayList();
+    			trainingAlphabetList[0] = danTrainHelper("TrainingSetBeta.jpg");
     			
-    			//System.out.println("SIZE OF LINES: " + danInk.lines.size());
+    			trainingAlphabetList[1] = danTrainHelper("TrainingSetCharlie.jpg");
     			
-    			for (int line = 0; line < danInk.lines.size(); line++){
-    				
-    				//System.out.println("Line: " + line + ", LETTERS: " + danInk.lines.get(line).words.size());
-    				
-    				for (int word = 0; word < danInk.lines.get(line).words.size(); word++){
-    					BufferedImage bf = null;
-    					bf = Preprocess.Display(danInk.lines.get(line).words.get(word));
-    					letterImages.add(bf);
-    					count++;
-    					
-    				}
-    			}
+    			trainingAlphabetList[2] = danTrainHelper("TrainingSetDelta.jpg");
+    			    			
+    			trainMethod(trainingAlphabetList);
     			
-    			trainingAlphabet = it.generateAlphabetMapTony(letterImages, imgSize);
-    			
+    			    			
     		}
     		else{
-    			trainingAlphabet = it.generateAlphabetMap(imgSize);
+    			Map[] trainingAlphabetList = new Map[1];
+    			trainingAlphabetList[0] = it.generateAlphabetMap(imgSize);
+    			trainMethod(trainingAlphabetList); //begin training of the network
     		}
-    		
-    		trainMethod(trainingAlphabet); //begin training of the network
     	}
     	
     	//testing
     	if (tonyTrain){
     		it.generateClusterTony(pd2, "TrainingSetBeta.jpg");
-    		testerTony(pd2.getLetters());
-    	}
-    	else if (danTrain){
-    		ppDan.Ink danInk2 = new ppDan.Ink();
-			danInk2 = Preprocess.getInk("TrainingSetBeta.jpg");
-			
-			int count = 0;
-			ArrayList<BufferedImage> letterImages = new ArrayList();
-			for (int line = 0; line < danInk2.lines.size(); line++){
-				for (int word = 0; word < danInk2.lines.get(line).words.size(); word++){
-					BufferedImage bf = Preprocess.Display(danInk2.lines.get(line).words.get(word));
-					letterImages.add(bf);
-					count++;
-				}
-			}
-			
-			testerTony(letterImages);
+    		tester(pd2.getLetters());
     		
+    		saver();
+    	}
+    	
+    	else if (danTrain){
+    		boolean completedBeta = true;
+    		boolean completedCharlie = false;
+    		while(true){
+        		if(completedBeta){
+        			completedBeta = testingSets("TrainingSetBeta.jpg");
+        			System.out.println("Testing Beta completed");
+        		}
+        		
+        		if(completedBeta){
+        			completedCharlie = testingSets("TrainingSetCharlie.jpg");
+            		System.out.println("Testing Charlie completed");
+            		completedBeta = false;
+        		}
+        		
+        		if(completedCharlie){
+        			testingSets("TrainingSetDelta.jpg");
+            		System.out.println("Testing Delta completed");
+            		saver();
+            		break;
+        		}
+    		}
     	}
     	else{
-    		tester();
+    		System.out.println("No training method set!");
     	}
     }
     

@@ -80,7 +80,7 @@ public class Line {
 		
 		if(foundWidth){
 			for(int i=0;i<spaces.size();i++){//remove insignificant white space clusters (spaces between letters)
-				if(spaces.get(i).getWidth()<maxWidth*.5){
+				if(spaces.get(i).getWidth()<maxWidth*.35){
 					spaces.remove(i);
 					i--;
 				}
