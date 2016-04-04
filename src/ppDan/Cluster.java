@@ -1,5 +1,6 @@
 package ppDan;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Cluster {
 	private ArrayList<Pixel> set;
@@ -33,6 +34,50 @@ public class Cluster {
 		centroidY = y;
 		set = new ArrayList<Pixel>();
 		distance = new ArrayList<Double>();
+	}
+	
+	public int[][] imgArray(double memCo){
+		int[][] image = new int[getWidth()+1][getHeight()+1];
+		
+		
+		//System.out.println(getWidth()+1);
+		//System.out.println(getHeight()+1);
+	    
+		for (int[] line : image) {
+			Arrays.fill(line, -1);
+		}
+		
+		minX = Integer.MAX_VALUE;
+		maxX = Integer.MIN_VALUE;
+		minY = Integer.MAX_VALUE;
+		maxY = Integer.MIN_VALUE;
+		
+		for(int i=0; i<set.size();i++){
+			if(getMemCoefficient(i)>=memCo){
+				
+				if(set.get(i).getX()>maxX) maxX=set.get(i).getX();
+				if(set.get(i).getX()<minX) minX=set.get(i).getX();
+				if(set.get(i).getY()>maxY) maxY=set.get(i).getY();
+				if(set.get(i).getY()<minY) minY=set.get(i).getY();
+			}
+			
+			
+		}
+		
+		for(int i=0; i<set.size();i++){
+			if(getMemCoefficient(i)>=memCo){
+				int w = set.get(i).getX()-minX;
+				int h = set.get(i).getY()-minY;
+				
+				image[w][h] = -16777216;
+			}
+			
+			
+		}
+	    
+		
+		return image;
+		
 	}
 	
 	
@@ -175,3 +220,4 @@ public class Cluster {
 	}
 
 }
+
