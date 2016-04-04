@@ -16,14 +16,16 @@ public class BackProp {
 	static Scanner sc = new Scanner(System.in);
 	static String fileName = "NNSave.txt"; // Name of save file for NN
 	
+	public static String testingFile = null; // Used while run from the GUI to store the loaded img
+	
 	//PARAMETERS TO SET
-	static boolean productionMode = true; // Are we running a pre trained neural network?
+	public static boolean productionMode = true; // Are we running a pre trained neural network?
 	static boolean tonyTrain = false; // Do we train using Tony's character Recognition?
 	static boolean danTrain = true;
-	static int imgSize = 11;
-	static int hiddenLayerSize = 52;
+	static int imgSize = 15;
+	static int hiddenLayerSize = 50;
 	static int epochs = 400; // Number of epochs while learning
-	static double learningRate = 0.15;
+	static double learningRate = 0.2;
 	static int alphabetSize = 56; // Size of the alphabet (Number of output nodes) (Do not change)
 	static int returnedValues = 2; // Number of results to return for each letter checked
 	static int swapRate = 30; // The larger this number, the more often we swap between training
@@ -208,7 +210,7 @@ public class BackProp {
     	}
     	
     	for (int n = 0; n < bestMatches.length; n++){
-    		System.out.println(bestMatches[n].outputNodeRepresentation + " at " + bestMatches[n].value + "% ");
+    		//System.out.println(bestMatches[n].outputNodeRepresentation + " at " + bestMatches[n].value + "% ");
     	}
     	
     	return bestMatches;
@@ -271,6 +273,11 @@ public class BackProp {
 
     }
     
+    public void destroy(){
+    	inputLayer = new ArrayList<Neuron>();
+    	hiddenLayer = new ArrayList<Neuron>();
+    	outputLayer = new ArrayList<Neuron>();
+    }
    
     /**
      * initializes a neural network with saved weights
@@ -285,6 +292,11 @@ public class BackProp {
 
             // Always wrap FileWriter in BufferedWriter.
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            String is = "" + imgSize;
+            bufferedWriter.write(is);
+            bufferedWriter.newLine();
+            bufferedWriter.write(hiddenLayerSize);
+            bufferedWriter.newLine();
             
             //get weights from input to hidden layers
         	for (int inputNode = 0; inputNode < inputLayer.size(); inputNode++){
@@ -323,8 +335,14 @@ public class BackProp {
     	try {
             FileReader fileReader = new FileReader(fileName);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
+            
+            imgSize = Integer.parseInt(bufferedReader.readLine());
+            hiddenLayerSize = Integer.parseInt(bufferedReader.readLine());
 
+            initialization(false);
+            
           //get weights from input to hidden layers
+            System.out.println("SIZE: " + hiddenLayer.size());
         	for (int inputNode = 0; inputNode < inputLayer.size(); inputNode++){
         		for (int hiddenNode = 0; hiddenNode < hiddenLayer.size(); hiddenNode++ ){
         			inputLayer.get(inputNode).weight.set(hiddenNode, Double.parseDouble(bufferedReader.readLine()));
@@ -505,7 +523,7 @@ public class BackProp {
 		
     }
  
-    public static boolean testingSets(String file){
+    public static String testingSets(String file){
 //    	ppDan.Ink danInk2 = new ppDan.Ink();
 //		danInk2 = Preprocess.getInk(file);
 //		
@@ -544,9 +562,7 @@ public class BackProp {
 		}
 		
 		System.out.println(result);
-		
-		
-		return true;
+		return result;
     }
     
     
@@ -561,36 +577,36 @@ public class BackProp {
     
     //  MAIN FUNCTION 
     @SuppressWarnings("static-access")
-	public static void main(String[] args) {
+	//public static void main(String[] args) {
+    public static String runNN(String[] args){
     	PatternDetector pd = new PatternDetector();
     	PatternDetector pd2 = new PatternDetector();
     	
     	Map<String, int[]> trainingAlphabet = new HashMap<String, int[]>();
        
-	//Taking args from prompt.
-	if (args.length == 0)
-		initialization(true); //initialize a plain NN
-	else if (args.length == 5) {
-		imgSize = Integer.parseInt(args[0]);
-		hiddenLayerSize = Integer.parseInt(args[1]);
-		epochs = Integer.parseInt(args[2]);
-		learningRate = Double.parseDouble(args[3]);
-		swapRate = Integer.parseInt(args[4]);
-		System.out.println("*** Proceeding with external parameters.");
-		System.out.println("*** " + args[0] + args[1] + args[2] + args[3] + args[4] + ".");
-		initialization(false);
-	} else {
-		System.out.println("!!! INCORRECT NUMBER OF PARAMETERS !!!");
-		System.out.println("*** Proceeding with default values.");
-		initialization(true); //initialize a plain NN
-	}
-
-    	//training
     	if (productionMode){
-        	System.out.println("ENSURE the following settings are the same!!");
     		loadNeuralNetwork();
+    	} 
+    	
+    	else{
     		
-    	} else{
+			//Taking args from prompt.
+			if (args.length == 0)
+				initialization(true); //initialize a plain NN
+			else if (args.length == 5) {
+				imgSize = Integer.parseInt(args[0]);
+				hiddenLayerSize = Integer.parseInt(args[1]);
+				epochs = Integer.parseInt(args[2]);
+				learningRate = Double.parseDouble(args[3]);
+				swapRate = Integer.parseInt(args[4]);
+				System.out.println("*** Proceeding with external parameters.");
+				System.out.println("*** " + args[0] + args[1] + args[2] + args[3] + args[4] + ".");
+				initialization(false);
+			} else {
+				System.out.println("!!! INCORRECT NUMBER OF PARAMETERS !!!");
+				System.out.println("*** Proceeding with default values.");
+				initialization(true); //initialize a plain NN
+			}
     		
     		if (tonyTrain){
         		System.out.println("Training using Tony");
@@ -622,7 +638,11 @@ public class BackProp {
     	}
     	
     	//testing
-    	if (tonyTrain){
+    	if (testingFile != null){
+    		return testingSets(testingFile);
+    	}
+    	
+    	else if (tonyTrain){
     		it.generateClusterTony(pd2, "TrainingSetBeta.jpg");
     		tester(pd2.getLetters());
     		
@@ -630,26 +650,19 @@ public class BackProp {
     	}
     	
     	else if (danTrain){
-    		boolean completedBeta = true;
-    		boolean completedCharlie = false;
     		
-			completedBeta = testingSets("TrainingSetBeta.jpg");
+			testingSets("TrainingSetBeta.jpg");
 			System.out.println("Testing Beta completed");
 	
-		
-		
-			completedCharlie = testingSets("TrainingSetCharlie.jpg");
+			testingSets("TrainingSetCharlie.jpg");
     		System.out.println("Testing Charlie completed");
-    		completedBeta = false;
-		
-		
 		
 			testingSets("TrainingSetDelta.jpg");
     		System.out.println("Testing Delta completed");
     		
-    		
     		testingSets("TestingSetEcho.jpg");
     		System.out.println("Testing Echo completed");
+    		
     		saver();
     		
         
@@ -658,6 +671,7 @@ public class BackProp {
     	else{
     		System.out.println("No training method set!");
     	}
+    	return "";
     }
     
     

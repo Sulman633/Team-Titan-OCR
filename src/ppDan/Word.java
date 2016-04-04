@@ -320,11 +320,11 @@ public class Word {
 		
 		image.setRGB(0, 0, w, h, data, 0, w);
 		
-		JFrame frame = new JFrame();
-		  JLabel label = new JLabel(new ImageIcon(image));
-		  frame.getContentPane().add(label, BorderLayout.CENTER);
-		  frame.pack();
-		  frame.setVisible(true);
+//		JFrame frame = new JFrame();
+//		  JLabel label = new JLabel(new ImageIcon(image));
+//		  frame.getContentPane().add(label, BorderLayout.CENTER);
+//		  frame.pack();
+//		  frame.setVisible(true);
 		  //frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		  return image;

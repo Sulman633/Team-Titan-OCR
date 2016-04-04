@@ -18,6 +18,7 @@ import org.apache.pdfbox.pdmodel.*;
 
 @SuppressWarnings("serial")
 public class Gui extends JFrame {
+	private String fileName;
 	private JPanel contentPane; //The content pane on the JFrame
 	private JTextField txtErrorArea; //This is used to display errors
 	private JFileChooser fc; //The File Chooser
@@ -26,6 +27,7 @@ public class Gui extends JFrame {
 	private JTextArea txtAreaAfter; //The text area that it will be written to on the right
 	private PDDocument document;
 	private static String inputError = "Please choose a Image or PDF before clicking this button!";
+	neuralnetwork.BackProp nn;
 	
 	public Gui(){
 		//Creates the JFrame
@@ -68,7 +70,7 @@ public class Gui extends JFrame {
 	         * the conditional statement.
 	         */
 	    	File selectedFile = fc.getSelectedFile(); //Stores the selected file into a variable
-	        String fileName = selectedFile.getName(); //Gets the name the file
+	        fileName = selectedFile.getName(); //Gets the name the file
 	        int index = selectedFile.getName().lastIndexOf('.');
 	        String newFileName = fileName.substring(index); //Gets the extension
 	        /*
@@ -116,12 +118,19 @@ public class Gui extends JFrame {
 	    }
 	}
 	//Generates the document after converting it 
-	@SuppressWarnings("unused")
 	private void generate(){
 		//Must first have a image loaded to use this option
 		if(bufferedImage != null){
+			System.out.println("starting NN");
+			neuralnetwork.BackProp nn = new neuralnetwork.BackProp();
+			nn.productionMode = true;
+			nn.testingFile = fileName;
+			String results = nn.runNN(null);
 			
-		}else {
+			display(results);
+			nn.destroy();
+		}
+		else {
 			txtErrorArea.setText(inputError);
 		}
 	}
@@ -168,7 +177,7 @@ public class Gui extends JFrame {
 	}
 	
 	public void display(String word){
-		
+		txtAreaAfter.setText(word);
 	}
 	/*
 	 * Creates the GUI with appropriate buttons and their 
@@ -201,6 +210,7 @@ public class Gui extends JFrame {
 		JButton btnGenerate = new JButton("Generate");
 		btnGenerate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				generate();
 			}
 		});
 		
