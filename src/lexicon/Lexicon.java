@@ -3,8 +3,6 @@ package lexicon;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import decisionmakingagent.PotentialWord;
 /**
  * Used by the decision making agent to select a word from a list of possibilities, the lexicon generates a list of candidate words, along with a frequency of use, when presented with an incomplete word or list of words.
  * Words are pulled from a pre-existing mySQL database that is loaded from a specified address. The lexicon also updates the frequency of use of a specific word in the aforementioned database when the word is chosen as the best candidate by the decision making agent. 
@@ -20,16 +18,18 @@ public class Lexicon {
 	/**
 	 * The address of the mySQL server which holds the lexicon.
 	 */
-	private final String DB_URL = "jdbc:mysql://sql5.freemysqlhosting.net/sql5112409";
+	//private final String DB_URL = "jdbc:mysql://sql5.freemysqlhosting.net/sql5112409";
+	private final String DB_URL = "jdbc:mysql://localhost:3306/lexicondb";
 	/**
 	 * The username that will be used to log into the mySql server.
 	 */
-	private final String DB_USERNAME = "sql5112409";
+	//private final String DB_USERNAME = "sql5112409";
+	private final String DB_USERNAME = "root";
 	/**
 	 * The password that will be used to log into the mySql server.
 	 */
 
-	private final String DB_PASSWORD = "HTqAhsXIZj"; // RyLFh7bdvT
+	private final String DB_PASSWORD = "";//"HTqAhsXIZj";
 
 	
 	public Lexicon() {
@@ -134,6 +134,7 @@ public class Lexicon {
 	/**
 	 * Updates the database to reflect the use of the specified word. If the word does not exist in the DB, a record is created and the frequency of use of the word is initialized to one. Else, if the word does exist, the frequency of use of the word is incremented by one.
 	 * @param newWord - the word for which the frequency of use should be updated.
+	 * @throws InvalidWordException - thrown if word is in an improper form; used to safeguard the DB.
 	 */
 	public void useWord( String newWord ) throws InvalidWordException{
 		

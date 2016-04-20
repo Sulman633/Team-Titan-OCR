@@ -16,11 +16,7 @@ import neuralnetwork.Neuron;
  * <p>The array of PotentialChars is then passed to the {@code genCombos} method to generate an ArrayList of PotentialWords. 
  * Each of these potential words is once again just an array of Neurons. This time, however, instead of a number of 
  * Neurons representing the top candidates for one specific letter, each the list of Neurons spells out a word that 
- * can be formed out of the list of letters. See below for a visual example.
- * <p>
- * 
- * <img src="./doc/genCombos.png"
- * style="width: 75%" />
+ * can be formed out of the list of letters.
  * 
  * <p>Each word in the ArrayList is then scored based on two criteria: the frequency of use and the cumulative probability 
  * of all of its letters.
@@ -37,31 +33,52 @@ public class Agent {
 	/**
 	 * Determines at what level of confidence a letter is considered to be unknown when performing a Lexicon lookup.
 	 */
-	public final float UNKNOWN_LETTER_CUTOFF = 0.6f;
+	private final float UNKNOWN_LETTER_CUTOFF = 0.6f;
+	/**
+	 * If true, prints output to console explaining the steps it is going through.
+	 * Performance is severely affected by the printing to the console; presentation should be disabled when running in production.
+	 */
+	private final boolean PRESENTATION_MODE = true;
 	
-	
+	//End of variables of interest.
 	
 	PotentialChar [] currentWord;
 	ArrayList<PotentialWord> wordList;
 	Lexicon lex = new Lexicon();
 	
+	/**
+	 * Given the output of the NN, generates and returns the word that is most likely the one composed of all the potential letters.
+	 * @param newWord - the letters from the NN that need to be evaluated to produce one word.
+	 * @return the best fit for the letters that were passed. See the class documentation for further explanation.
+	 */
 	public String assess( PotentialChar [] newWord ){
+		
+		System.out.println(" === Step 1 ===");
+		System.out.println("A list of every");
+		
 		
 		wordList = genCombos(newWord);
 		
-		//**NOTE** To access the actual data in a word, use the following notation:
-		//		       The character # in the word you're looking at V
-		//									wordList.get( # ).CHARS[ # ]
-		// The # of the potential word you're looking for ^ 
-
-		//The actual character stored in the Neuron is called outputNodeRepresentation 
-		//and the score from the NN is called value.
+		if( PRESENTATION_MODE ){
+			
+			System.out.println(" === Step 2 ===");
+			System.out.println("Now generating words from the lexicon and scoring them based on the frequecy of use.");
+			System.out.println("\nFirst, all the existing words from the running list are scored.");
+			System.out.println("\nSecond, if a specific letter in a word falls below the specified tolerance level, the lexicon will be searched in an attempt to replace the letter to form another word.");
+			
+		}
 		
-		
-		//The scoreByLexicon method will generate additional entries to the wordList, so
-		//it must be executed before scoreByProbability.
 		scoreByLexicon();
+		
+		if( PRESENTATION_MODE ){
+			
+			System.out.println("\n === Step 3 ===");
+			System.out.println("Finally, the complete list of possible words are scored based on the proability of their individual letters.");
+			
+		}
 		wordList = scoreByProbability( wordList );
+		
+		if( PRESENTATION_MODE ) presentWordList();
 		
 		return makeFinalDecision();
 		
@@ -71,7 +88,7 @@ public class Agent {
 	 * @param pWord - the array of PotentialChars that will provide all possible letters to be used in the words.
 	 * @return an ArrayList of all possible combinations of Neurons.
 	 */
-	ArrayList<PotentialWord> genCombos( PotentialChar [] pWord ){
+	private ArrayList<PotentialWord> genCombos( PotentialChar [] pWord ){
 		
 		currentWord = pWord;
 		
@@ -122,8 +139,6 @@ public class Agent {
 		
 		for( int i = 0; i < wordList.size(); i++ ){
 			
-			System.out.println( "Now working on the #" + i + "word from the list of generated combos." );
-			
 			Neuron [] preSearchWord = new Neuron[wordList.get(i).CHARS.length];
 			
 			//Removes the letters that fall below a certain threshold.
@@ -167,25 +182,36 @@ public class Agent {
 				
 				PotentialWord nextNewWord = new PotentialWord(postSearchWord);
 				
-				//For debugging; prints each new word as it's created.
-				System.out.println(nextNewWord.getString());
-				
 				nextNewWord.lexiconScore = resultantWords[l].FREQ;
 				
 				boolean isDuplicate = false;
 				
 				//Tests if this word is a duplicate.
-				for( int n = 0; n < newWords.size(); n++ ){
+				for( int n = 0; n < wordList.size(); n++ ){
 					
 					if( nextNewWord.equals( wordList.get(n) ) ) isDuplicate = true;
 					
 				}
 				
-				if( !isDuplicate ) wordList.add( nextNewWord );
+				for( int n = 0; n < newWords.size(); n++ ){
+					
+					if( nextNewWord.equals( newWords.get(n) ) ) isDuplicate = true;
+					
+				}
+				
+				if( !isDuplicate ){
+					
+					//For presentation; prints each new word as it's created.
+					if( PRESENTATION_MODE ) System.out.println("The word \"" + nextNewWord.getString() + "\" was created by replacing letters in the word \"" + wordList.get(i).getString() + "\".");
+					
+					newWords.add( nextNewWord );
+				}
 				
 			}
 			
 		}
+		
+		wordList.addAll(newWords);
 		
 	}
 	
@@ -204,16 +230,53 @@ public class Agent {
 			avgProbability/=combos.get(i).CHARS.length;
 			combos.get(i).setProbabilitiyScore(avgProbability);
 			avgProbability =0;
-			System.out.println(combos.get(i).getProbabilityScore());
 		}
 		return combos;
 	}
+	/**
+	 * Used for presentation mode; prints out the contents of wordList and their scores in an easy-to-read format.
+	 */
+	private void presentWordList(){
+		
+		System.out.println("\nHere is the resulting list of words with their respective lexicon and probability scores:");
+		for( PotentialWord curWord: wordList ){
+			
+			System.out.println(curWord.getString() + " - "+ curWord.lexiconScore + " - " + curWord.probabilityScore );
+			
+		}
+		
+	}
 	
+	/**
+	 * Simply scores every word and returns the word with the highest score.
+	 * @return the word that is the best fit for all the letters passed to the decision making agent.
+	 */
 	public String makeFinalDecision(){
 		
-		//TODO Return the best string based on both scores.
+		if( PRESENTATION_MODE ) System.out.println("\nBoth scores are taken into consideration and the final predicted word is returned to the driver.");
 		
-		return "";
+		PotentialWord bestWord = wordList.get(0);
+		
+		for( PotentialWord curWord: wordList ){
+			
+			if( getFinalScore(bestWord) < getFinalScore(curWord) ) bestWord = curWord;
+			
+		}
+		
+		if( PRESENTATION_MODE ) System.out.println( "The final word: "+ bestWord.getString() );
+		
+		return bestWord.getString();
+		
+	}
+	
+	/**
+	 * Generates final score based on 
+	 * @param pW - the potential word to score
+	 * @return a score found by adding the probability score to 1% of the lexicon score.
+	 */
+	private double getFinalScore( PotentialWord pW ){
+		
+		return pW.probabilityScore + (pW.lexiconScore * 0.01);
 		
 	}
 	

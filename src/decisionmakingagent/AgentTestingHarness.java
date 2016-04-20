@@ -1,7 +1,5 @@
 package decisionmakingagent;
 
-import java.util.ArrayList;
-
 import neuralnetwork.Neuron;
 /**
  * Test harness for the Agent package. Currently tests the Agent's ability to generate words from a list of PotentialChars.
@@ -28,7 +26,7 @@ public class AgentTestingHarness {
 	private void initWords(){
 		
 		testWord = new PotentialChar [4];
-		Neuron [] n0 = new Neuron[3];
+		Neuron [] n0 = new Neuron[4];
 		n0[0] = new Neuron();
 		n0[0].outputNodeRepresentation = "f";
 		n0[0].value = .90;
@@ -38,9 +36,12 @@ public class AgentTestingHarness {
 		n0[2] = new Neuron();
 		n0[2].outputNodeRepresentation = "l";
 		n0[2].value = .75;
+		n0[3] = new Neuron();
+		n0[3].outputNodeRepresentation = "p";
+		n0[3].value = .40;
 		testWord[0] = new PotentialChar(n0);
 		
-		Neuron [] n1 = new Neuron[3];
+		Neuron [] n1 = new Neuron[4];
 		n1[0] = new Neuron();
 		n1[0].outputNodeRepresentation = "r";
 		n1[0].value = .95;
@@ -48,11 +49,14 @@ public class AgentTestingHarness {
 		n1[1].outputNodeRepresentation = "n";
 		n1[1].value = .90;
 		n1[2] = new Neuron();
-		n1[2].outputNodeRepresentation = "c";
+		n1[2].outputNodeRepresentation = "p";
 		n1[2].value = .90;
+		n1[3] = new Neuron();
+		n1[3].outputNodeRepresentation = "a";
+		n1[3].value = .60;
 		testWord[1] = new PotentialChar(n1);
 		
-		Neuron [] n2 = new Neuron[3];
+		Neuron [] n2 = new Neuron[4];
 		n2[0] = new Neuron();
 		n2[0].outputNodeRepresentation = "o";
 		n2[0].value = .90;
@@ -62,51 +66,27 @@ public class AgentTestingHarness {
 		n2[2] = new Neuron();
 		n2[2].outputNodeRepresentation = "c";
 		n2[2].value = .30;
+		n2[3] = new Neuron();
+		n2[3].outputNodeRepresentation = "p";
+		n2[3].value = .15;
 		testWord[2] = new PotentialChar(n2);
 		
-		Neuron [] n3 = new Neuron[3];
+		Neuron [] n3 = new Neuron[4];
 		n3[0] = new Neuron();
 		n3[0].outputNodeRepresentation = "g";
 		n3[0].value = .85;
 		n3[1] = new Neuron();
-		n3[1].outputNodeRepresentation = "j";
+		n3[1].outputNodeRepresentation = "q";
 		n3[1].value = .80;
 		n3[2] = new Neuron();
-		n3[2].outputNodeRepresentation = "y";
+		n3[2].outputNodeRepresentation = "a";
 		n3[2].value = .80;
+		n3[3] = new Neuron();
+		n3[3].outputNodeRepresentation = "j";
+		n3[3].value = .75;
 		testWord[3] = new PotentialChar(n3);
 		
-	}
-	/**
-	 * Tests the agent's ability to generate words from nodes in a situation identical to what it would see once integrated. 
-	 */
-	private void testGenerationOfWords(){
-		
-		ArrayList<PotentialWord> combos=  a.genCombos(testWord);
-		
-		for( int i = 0; i < combos.size(); i++){
-			
-			printWord(combos.get(i));
-			
-		}
-		
-	}
-	
-	/**
-	 * Prints out the contents of a potential word.
-	 * @param p - the {@link PotentialWord} to print out to the console for testing purposes.
-	 */
-	private static void printWord( PotentialWord p ){
-		
-		for( int i = 0; i < p.CHARS.length; i++ ){
-			
-			System.out.print( p.CHARS[i].outputNodeRepresentation + " - " + p.CHARS[i].value + "\t");
-			
-		}
-		
-		System.out.println();
-		
-	}
+	}	
 	
 	public static void main( String args[]){ new AgentTestingHarness(); }
 	

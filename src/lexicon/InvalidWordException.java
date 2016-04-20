@@ -11,6 +11,7 @@ public class InvalidWordException extends Exception {
 
 	/**
 	 * @see Exception#Exception(String)
+	 * @param message - see reference below
 	 */
 	public InvalidWordException(String message) {
 		super(message);

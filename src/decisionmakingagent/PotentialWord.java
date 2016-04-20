@@ -26,7 +26,7 @@ public class PotentialWord {
 	}
 	/**
 	 * Compares the String representations of each PotentialWord to determine if they represent the same English word.
-	 * @param - otherWord the word to be compared to.
+	 * @param otherWord - the word to be compared to.
 	 * @return true if the String representations of the words match, else false.
 	 */
 	public boolean equals( PotentialWord otherWord ){
