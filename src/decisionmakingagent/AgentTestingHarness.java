@@ -26,6 +26,44 @@ public class AgentTestingHarness {
 	private void initWords(){
 		
 		testWord = new PotentialChar [4];
+		
+		final int NUMBER_OF_LETTERS = 4;
+		final int LENGTH_OF_WORD = 4;
+		
+		String [][] letters = {
+				{"f","t","l","p"},
+				{"r","n","p","a"},
+				{"o","a","c","p"},
+				{"g","q","a","j"}
+				};
+		
+		double [][] values = {
+				{.90,.80,.75,.40},
+				{.95,.90,.90,.60},
+				{.90,.75,.30,.15},
+				{.85,.80,.80,.75}
+				};
+		
+		Neuron [][] neurons = new Neuron[LENGTH_OF_WORD][NUMBER_OF_LETTERS];
+		
+		
+		for( int i = 0; i < LENGTH_OF_WORD; i++ ){
+			
+			neurons[i] = new Neuron[NUMBER_OF_LETTERS];
+			
+			for( int j = 0; j < NUMBER_OF_LETTERS; j++ ){
+				
+				neurons[i][j] = new Neuron();
+				neurons[i][j].outputNodeRepresentation = letters[i][j];
+				neurons[i][j].value = values[i][j];
+				
+			}
+			
+			testWord[i] = new PotentialChar(neurons[i]);
+			
+		}
+		
+		/*
 		Neuron [] n0 = new Neuron[4];
 		n0[0] = new Neuron();
 		n0[0].outputNodeRepresentation = "f";
@@ -85,7 +123,7 @@ public class AgentTestingHarness {
 		n3[3].outputNodeRepresentation = "j";
 		n3[3].value = .75;
 		testWord[3] = new PotentialChar(n3);
-		
+		*/
 	}	
 	
 	public static void main( String args[]){ new AgentTestingHarness(); }

@@ -54,14 +54,14 @@ public class Agent {
 	public String assess( PotentialChar [] newWord ){
 		
 		System.out.println(" === Step 1 ===");
-		System.out.println("A list of every");
+		System.out.println("A list of every combination of the letters provided is generated.");
 		
 		
 		wordList = genCombos(newWord);
 		
 		if( PRESENTATION_MODE ){
 			
-			System.out.println(" === Step 2 ===");
+			System.out.println("\n === Step 2 ===");
 			System.out.println("Now generating words from the lexicon and scoring them based on the frequecy of use.");
 			System.out.println("\nFirst, all the existing words from the running list are scored.");
 			System.out.println("\nSecond, if a specific letter in a word falls below the specified tolerance level, the lexicon will be searched in an attempt to replace the letter to form another word.");
